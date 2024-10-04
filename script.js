@@ -19,6 +19,7 @@ let messageQueue = [];
 let isDisplayingMessage = false;
 let currentContract = null;
 let isContractActive = false;
+let automateWorkInterval = null; // Store the interval ID for automated work
 
 function displayMessage(message) {
     messageQueue.push(message);
@@ -151,24 +152,19 @@ function hasRequiredEquipment(contract) {
 function offerToBuyEquipment(equipmentList) {
     equipmentList.forEach(item => {
         if (item === 'Stump Grinder') {
-            displayMessage('Do you want to buy a Stump Grinder for £700?');
-            // Implement purchase logic if desired
+            displayMessage('Tip: Consider buying a Stump Grinder for £700.');
         }
         if (item === 'Hedge Trimmer') {
-            displayMessage('Do you want to buy a Hedge Trimmer for £300?');
-            // Implement purchase logic if desired
+            displayMessage('Tip: Consider buying a Hedge Trimmer for £300.');
         }
         if (item === 'Climbing Gear') {
-            displayMessage('Do you want to buy Climbing Gear for £500?');
-            // Implement purchase logic if desired
+            displayMessage('Tip: Consider buying Climbing Gear for £500.');
         }
         if (item === 'Climber') {
-            displayMessage('Do you want to hire a Climber for £800?');
-            // Implement purchase logic if desired
+            displayMessage('Tip: Consider hiring a Climber for £800.');
         }
         if (item === 'Groundsman') {
-            displayMessage('Do you want to hire a Groundsman for £600?');
-            // Implement purchase logic if desired
+            displayMessage('Tip: Consider hiring a Groundsman for £600.');
         }
     });
 }
@@ -220,7 +216,7 @@ document.getElementById('buyTruck').addEventListener('click', function() {
 
 // Hire Climber
 document.getElementById('hireClimber').addEventListener('click', function() {
-    if (chainsawCount > climberCount + groundsmanCount) {
+    if (chainsawCount >= climberCount + groundsmanCount + 1) {
         climberCount = buyItem(800, climberCount, 'climberCount', 'You hired a climber!');
     } else {
         displayMessage('You need to buy a chainsaw for this staff member.');
@@ -229,7 +225,7 @@ document.getElementById('hireClimber').addEventListener('click', function() {
 
 // Hire Groundsman
 document.getElementById('hireGroundsman').addEventListener('click', function() {
-    if (chainsawCount > climberCount + groundsmanCount) {
+    if (chainsawCount >= climberCount + groundsmanCount + 1) {
         groundsmanCount = buyItem(600, groundsmanCount, 'groundsmanCount', 'You hired a groundsman!');
     } else {
         displayMessage('You need to buy a chainsaw for this staff member.');
@@ -248,14 +244,19 @@ document.getElementById('buyFuel').addEventListener('click', function() {
     }
 });
 
-// Unlock Area
+// Unlock Area with new requirements
 document.getElementById('unlockArea').addEventListener('click', function() {
+    let staffCount = climberCount + groundsmanCount;
     if (money >= 1000 && areaLevel < maxAreas) {
-        money -= 1000;
-        areaLevel += 1;
-        updateStatus('You unlocked a new area!');
-        displayMessage('You unlocked a new area!');
-        checkForAwards();
+        if (truckCount >= 3 && chainsawCount >= 6 && staffCount >= 6) {
+            money -= 1000;
+            areaLevel += 1;
+            updateStatus('You unlocked a new area!');
+            displayMessage('You unlocked a new area!');
+            checkForAwards();
+        } else {
+            displayMessage('To unlock a new area, you need at least 3 trucks, 6 chainsaws, and 6 staff members.');
+        }
     } else if (areaLevel >= maxAreas) {
         displayMessage('All areas are already unlocked.');
     } else {
@@ -278,6 +279,14 @@ document.getElementById('prestige').addEventListener('click', function() {
         groundsmanCount = 0;
         fuel = 100;
         areaLevel = 1;
+        isContractActive = false;
+        currentContract = null;
+        document.getElementById('contracts').style.display = 'none';
+        // Clear automated work interval
+        if (automateWorkInterval !== null) {
+            clearInterval(automateWorkInterval);
+            automateWorkInterval = null;
+        }
         updateStatus('Business restarted! Prestige Level: ' + prestigeLevel);
         displayMessage('Business restarted! You now earn more per job.');
         baseContractTime += 60; // Increase timer duration as player progresses
@@ -285,6 +294,29 @@ document.getElementById('prestige').addEventListener('click', function() {
         displayMessage('You need at least £5000 to prestige.');
     }
 });
+
+// Function to automate work
+function automateWork() {
+    if (automateWorkInterval !== null) {
+        clearInterval(automateWorkInterval);
+    }
+    automateWorkInterval = setInterval(function() {
+        if (fuel <= 0) return;
+        let crewCount = Math.min(truckCount, Math.floor(Math.min(climberCount, groundsmanCount) / 2));
+        let availableChainsaws = chainsawCount - (climberCount + groundsmanCount);
+        if (crewCount === 0 || availableChainsaws < 0) {
+            return;
+        }
+        let earnings = 50 * crewCount;
+        if (hasHedgeTrimmer) earnings += 75 * crewCount;
+        if (hasStumpGrinder) earnings += 150 * crewCount;
+        let bonus = (prestigeLevel * 25) + (areaLevel * 50);
+        money += earnings + bonus;
+        fuel -= 10 * crewCount;
+        if (fuel < 0) fuel = 0;
+        updateStatus();
+    }, 5000); // Staff works every 5 seconds
+}
 
 // Timer for contracts, adjusting over time
 setInterval(function() {
