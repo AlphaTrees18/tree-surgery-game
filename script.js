@@ -139,7 +139,7 @@ function bidForJob() {
             let jobDiv = document.createElement('div');
             jobDiv.classList.add('job');
             jobDiv.setAttribute('id', 'job' + newJobId);
-            jobDiv.innerHTML = `<span>Additional Job - £600 (60 sec)</span> <button onclick="startJob(${newJobId})">Start</button>`;
+            jobDiv.innerHTML = `<span>Additional Job - £600</span> <button onclick="startJob(${newJobId})">Start</button>`;
             document.getElementById('jobsList').appendChild(jobDiv);
         } else {
             alert("Bid failed. Better luck next time!");
