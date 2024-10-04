@@ -7,6 +7,18 @@ let areaLevel = 1;
 let staffHired = false;
 let contractTimer = 10;
 let contractsAvailable = 0;
+let awards = [];
+let baseContractTime = 10; // Starting timer for contracts
+
+// Function to display messages without pop-ups
+function displayMessage(message) {
+    const messageText = document.getElementById('messageText');
+    messageText.innerText = message;
+    // Clear message after 5 seconds
+    setTimeout(() => {
+        messageText.innerText = '';
+    }, 5000);
+}
 
 // Update the status of the game
 function updateStatus(extraMessage = '') {
@@ -17,12 +29,14 @@ function updateStatus(extraMessage = '') {
     document.getElementById('staffStatus').innerText = staffHired ? 'Yes' : 'No';
     document.getElementById('areaStatus').innerText = areaLevel;
     document.getElementById('prestigeStatus').innerText = prestigeLevel;
+    updateAwards();
+    updateBossChallenge();
 }
 
 // Function to handle working
 document.getElementById('workButton').addEventListener('click', function() {
     if (fuel <= 0) {
-        alert('No fuel! Buy more to continue working.');
+        displayMessage('No fuel! Buy more to continue working.');
         return;
     }
     let earnings = 50; // Base earning
@@ -41,10 +55,11 @@ document.getElementById('buyChainsaw').addEventListener('click', function() {
         money -= 200;
         hasChainsaw = true;
         updateStatus('You bought a chainsaw!');
+        displayMessage('You bought a chainsaw!');
     } else if (hasChainsaw) {
-        alert('You already own a chainsaw!');
+        displayMessage('You already own a chainsaw!');
     } else {
-        alert('Not enough money to buy a chainsaw.');
+        displayMessage('Not enough money to buy a chainsaw.');
     }
 });
 
@@ -54,10 +69,11 @@ document.getElementById('buyVan').addEventListener('click', function() {
         money -= 500;
         hasVan = true;
         updateStatus('You bought a van!');
+        displayMessage('You bought a van!');
     } else if (hasVan) {
-        alert('You already own a van!');
+        displayMessage('You already own a van!');
     } else {
-        alert('Not enough money to buy a van.');
+        displayMessage('Not enough money to buy a van.');
     }
 });
 
@@ -67,8 +83,9 @@ document.getElementById('buyFuel').addEventListener('click', function() {
         money -= 50;
         fuel = 100;
         updateStatus('You refueled your equipment.');
+        displayMessage('You refueled your equipment.');
     } else {
-        alert('Not enough money to buy fuel.');
+        displayMessage('Not enough money to buy fuel.');
     }
 });
 
@@ -78,8 +95,10 @@ document.getElementById('unlockArea').addEventListener('click', function() {
         money -= 1000;
         areaLevel += 1;
         updateStatus('You unlocked a new area!');
+        displayMessage('You unlocked a new area!');
+        checkForAwards();
     } else {
-        alert('Not enough money to unlock a new area.');
+        displayMessage('Not enough money to unlock a new area.');
     }
 });
 
@@ -89,11 +108,12 @@ document.getElementById('hireStaff').addEventListener('click', function() {
         money -= 1500;
         staffHired = true;
         updateStatus('You hired staff!');
+        displayMessage('You hired staff!');
         automateWork();
     } else if (staffHired) {
-        alert('Staff already hired.');
+        displayMessage('Staff already hired.');
     } else {
-        alert('Not enough money to hire staff.');
+        displayMessage('Not enough money to hire staff.');
     }
 });
 
@@ -108,9 +128,10 @@ document.getElementById('prestige').addEventListener('click', function() {
         staffHired = false;
         areaLevel = 1;
         updateStatus('Business restarted! Prestige Level: ' + prestigeLevel);
-        alert('Business restarted! You now earn more per job.');
+        displayMessage('Business restarted! You now earn more per job.');
+        baseContractTime += 5; // Increase timer duration as player progresses
     } else {
-        alert('You need at least £5000 to prestige.');
+        displayMessage('You need at least £5000 to prestige.');
     }
 });
 
@@ -129,17 +150,44 @@ function automateWork() {
     }, 5000); // Staff works every 5 seconds
 }
 
-// Timer for contracts
+// Timer for contracts, adjusting over time
 setInterval(function() {
     if (contractTimer > 0) {
         contractTimer--;
         document.getElementById('contractTimer').innerText = contractTimer;
     } else {
         contractsAvailable++;
-        contractTimer = 10; // Reset timer
-        alert('A new contract is available!');
+        contractTimer = baseContractTime + (areaLevel * 5); // Increase timer with area level
+        displayMessage('A new contract is available!');
+        // Implement contract logic here if desired
     }
 }, 1000); // Countdown every second
+
+// Function to update awards
+function updateAwards() {
+    document.getElementById('awardsList').innerText = awards.length > 0 ? awards.join(', ') : 'No awards earned yet.';
+}
+
+// Function to check for awards
+function checkForAwards() {
+    if (areaLevel === 3 && !awards.includes('Regional Arborist Award')) {
+        awards.push('Regional Arborist Award');
+        displayMessage('Congratulations! You earned the Regional Arborist Award for unlocking 3 areas!');
+    }
+    if (prestigeLevel === 1 && !awards.includes('Prestige Pioneer')) {
+        awards.push('Prestige Pioneer');
+        displayMessage('Congratulations! You earned the Prestige Pioneer award for your first prestige!');
+    }
+}
+
+// Function to update boss challenge information
+function updateBossChallenge() {
+    if (areaLevel >= 3) {
+        document.getElementById('bossChallengeInfo').innerText = 'You are ready for the boss challenge! Take on the Giant Oak in the central park!';
+    } else {
+        document.getElementById('bossChallengeInfo').innerText = 'Next boss challenge unlocks when you reach 3 areas unlocked!';
+    }
+}
 
 // Initial status update
 updateStatus();
