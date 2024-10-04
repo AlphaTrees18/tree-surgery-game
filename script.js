@@ -152,7 +152,7 @@ function unlockArea() {
             currentArea = areas[areaLevel];
             updateStatus("You unlocked " + currentArea.name + "!");
         } else {
-            alert("Not enough money to unlock " + nextArea.name + ". You need £" + nextArea.cost + ".");
+            alert("Not enough money to unlock " + nextArea.name + ". You need £" + nextArea.cost.toLocaleString() + ".");
         }
     } else {
         alert("All areas have been unlocked!");
