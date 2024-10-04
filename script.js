@@ -8,6 +8,19 @@ let woodChipperCount = 0;
 let fuelCount = 100; // Fuel starts at 100%
 let money = 5000; // Player starts with £5000
 let progressBarElement = document.getElementById("progress-bar");
+let areaLevel = 1; // Starting area level
+let areas = [
+    { name: "London", cost: 0 },
+    { name: "Birmingham", cost: 50000 },
+    { name: "Manchester", cost: 100000 },
+    { name: "Glasgow", cost: 275000 }
+];
+let currentArea = areas[0]; // Start with London
+
+// Prompt user for their tree surgery business name
+let businessName = prompt("Enter your tree surgery business name:", "Your Tree Surgery Business");
+document.title = businessName + " - Arborist Ascend";
+document.getElementById('businessNameDisplay').innerText = businessName;
 
 // Function to update the player's status
 function updateStatus(message) {
@@ -18,6 +31,7 @@ function updateStatus(message) {
     document.getElementById('woodChipperCount').innerText = woodChipperCount;
     document.getElementById('fuelCount').innerText = fuelCount + "%";
     document.getElementById('moneyDisplay').innerText = "Money: £" + money.toFixed(2);
+    document.getElementById('currentAreaDisplay').innerText = "Current Area: " + currentArea.name;
     if (message) alert(message);
 }
 
@@ -126,6 +140,23 @@ function unlockBox(boxId) {
     let box = document.getElementById("box" + boxId);
     box.classList.remove("locked");
     box.innerHTML = "<p>Truck " + boxId + "</p><p>Ready</p>";
+}
+
+// Function to unlock a new area (city)
+function unlockArea() {
+    if (areaLevel < areas.length - 1) {
+        let nextArea = areas[areaLevel + 1];
+        if (money >= nextArea.cost) {
+            money -= nextArea.cost;
+            areaLevel++;
+            currentArea = areas[areaLevel];
+            updateStatus("You unlocked " + currentArea.name + "!");
+        } else {
+            alert("Not enough money to unlock " + nextArea.name + ". You need £" + nextArea.cost + ".");
+        }
+    } else {
+        alert("All areas have been unlocked!");
+    }
 }
 
 // Function to bid for additional jobs
