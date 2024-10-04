@@ -98,12 +98,16 @@ function startJob(jobId) {
     }
 
     // Check if the job requires specific equipment
-    if (jobId === 2 && hedgeTrimmerCount <= 0) { // Hedge trimming requires a hedge trimmer
+    if (jobId === 1 && hedgeTrimmerCount <= 0) { // Hedge trimming requires a hedge trimmer
         alert("You need a hedge trimmer for this job!");
         return;
     }
-    if (jobId === 3 && stumpGrinderCount <= 0) { // Stump grinding requires a stump grinder
+    if (jobId === 2 && stumpGrinderCount <= 0) { // Stump grinding requires a stump grinder
         alert("You need a stump grinder for this job!");
+        return;
+    }
+    if (jobId === 3 && chainsawCount <= 0) { // Tree pruning requires a chainsaw
+        alert("You need a chainsaw for this job!");
         return;
     }
 
@@ -145,4 +149,43 @@ function completeJob(jobId) {
     let jobElement = document.getElementById("job" + jobId);
     jobElement.classList.remove("in-progress");
     jobElement.classList.add("completed");
-    update
+    updateStatus("Job completed! You earned £" + earnings);
+}
+
+// Function to bid for an additional job
+function bidForJob() {
+    if (money >= 100) {
+        money -= 100;
+        if (Math.random() > 0.5) {
+            let newJobId = Object.keys(jobInProgress).length + 1;
+            let newJob = document.createElement("div");
+            newJob.className = "job";
+            newJob.id = "job" + newJobId;
+            newJob.innerHTML = `<span>Additional Job - £500</span> <button onclick="startJob(${newJobId})">Start</button>`;
+            document.getElementById("jobsList").appendChild(newJob);
+            updateStatus("You won the bid and got an additional job!");
+        } else {
+            updateStatus("You lost the bid. Better luck next time!");
+        }
+    } else {
+        alert("Not enough money to bid for a job.");
+    }
+}
+
+// Function to unlock a new area
+function unlockArea() {
+    if (areaLevel < areas.length && money >= areas[areaLevel].cost) {
+        money -= areas[areaLevel].cost;
+        currentArea = areas[areaLevel];
+        areaLevel++;
+        let newBox = document.getElementById("box" + areaLevel);
+        newBox.classList.remove("locked");
+        newBox.innerHTML = `<p>${currentArea.name}</p><p>Ready</p>`;
+        updateStatus(`You unlocked ${currentArea.name}!`);
+    } else {
+        alert("Not enough money to unlock a new area or all areas are already unlocked.");
+    }
+}
+
+// Initial status update
+updateStatus();
