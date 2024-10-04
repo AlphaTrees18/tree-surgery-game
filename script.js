@@ -4,6 +4,7 @@ let jobsCompleted = 0;
 let chainsawCount = 1; // Start with 1 chainsaw
 let hedgeTrimmerCount = 0;
 let stumpGrinderCount = 0;
+let woodChipperCount = 0;
 let fuelCount = 100; // Fuel starts at 100%
 let money = 5000; // Player starts with £5000
 let progressBarElement = document.getElementById("progress-bar");
@@ -14,7 +15,9 @@ function updateStatus(message) {
     document.getElementById('chainsawCount').innerText = chainsawCount;
     document.getElementById('hedgeTrimmerCount').innerText = hedgeTrimmerCount;
     document.getElementById('stumpGrinderCount').innerText = stumpGrinderCount;
+    document.getElementById('woodChipperCount').innerText = woodChipperCount;
     document.getElementById('fuelCount').innerText = fuelCount + "%";
+    document.getElementById('moneyDisplay').innerText = "Money: £" + money.toFixed(2);
     if (message) alert(message);
 }
 
@@ -24,15 +27,15 @@ function buyTool(tool) {
     if (tool === 'chainsaw' && money >= 500) {
         cost = 500;
         chainsawCount++;
-        document.getElementById('chainsawCount').innerText = chainsawCount;
     } else if (tool === 'hedgeTrimmer' && money >= 300) {
         cost = 300;
         hedgeTrimmerCount++;
-        document.getElementById('hedgeTrimmerCount').innerText = hedgeTrimmerCount;
-    } else if (tool === 'stumpGrinder' && money >= 400) {
-        cost = 400;
+    } else if (tool === 'stumpGrinder' && money >= 3000) {
+        cost = 3000;
         stumpGrinderCount++;
-        document.getElementById('stumpGrinderCount').innerText = stumpGrinderCount;
+    } else if (tool === 'woodChipper' && money >= 5000) {
+        cost = 5000;
+        woodChipperCount++;
     } else {
         alert("Not enough money to buy " + tool);
         return;
@@ -46,7 +49,6 @@ function buyFuel() {
     if (money >= 100) {
         fuelCount = 100;
         money -= 100;
-        document.getElementById('fuelCount').innerText = fuelCount + "%";
         updateStatus("You refueled your trucks!");
     } else {
         alert("Not enough money to buy fuel.");
