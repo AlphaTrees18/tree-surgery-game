@@ -125,8 +125,75 @@ document.getElementById('acceptContractButton').addEventListener('click', functi
         displayMessage('Not enough fuel to accept this contract.');
         return;
     }
+    if (currentContract.requiredEquipment === 'Stump Grinder' && !hasStumpGrinder) {
+        displayMessage('You need a Stump Grinder to accept this contract.');
+        return;
+    }
+    if (currentContract.requiredEquipment === 'Hedge Trimmer' && !hasHedgeTrimmer) {
+        displayMessage('You need a Hedge Trimmer to accept this contract.');
+        return;
+    }
     isContractActive = true;
     displayMessage('You accepted a contract: ' + currentContract.description);
+});
+
+// Function to buy items
+function buyItem(cost, itemVariable, statusElementId, successMessage) {
+    if (money >= cost) {
+        money -= cost;
+        if (typeof itemVariable === 'number') {
+            itemVariable += 1;
+            document.getElementById(statusElementId).innerText = itemVariable;
+        } else {
+            itemVariable = true;
+            document.getElementById(statusElementId).innerText = 'Owned';
+        }
+        updateStatus(successMessage);
+        displayMessage(successMessage);
+        return itemVariable;
+    } else {
+        displayMessage('Not enough money to make this purchase.');
+    }
+    return itemVariable;
+}
+
+// Buy Chainsaw
+document.getElementById('buyChainsaw').addEventListener('click', function() {
+    chainsawCount = buyItem(500, chainsawCount, 'chainsawCount', 'You bought a chainsaw!');
+});
+
+// Buy Climbing Gear
+document.getElementById('buyClimbingGear').addEventListener('click', function() {
+    hasClimbingGear = buyItem(1000, hasClimbingGear, 'climbingGearStatus', 'You bought climbing gear!');
+});
+
+// Buy Hedge Trimmer
+document.getElementById('buyHedgeTrimmer').addEventListener('click', function() {
+    hasHedgeTrimmer = buyItem(800, hasHedgeTrimmer, 'hedgeTrimmerStatus', 'You bought a hedge trimmer!');
+});
+
+// Buy Stump Grinder
+document.getElementById('buyStumpGrinder').addEventListener('click', function() {
+    hasStumpGrinder = buyItem(1500, hasStumpGrinder, 'stumpGrinderStatus', 'You bought a stump grinder!');
+});
+
+// Unlock Area with updated requirements
+document.getElementById('unlockArea').addEventListener('click', function() {
+    let staffCount = climberCount + groundsmanCount;
+    if (money >= 100000 && areaLevel < maxAreas) {
+        if (truckCount >= 3 && chainsawCount >= 6 && staffCount >= 6) {
+            money -= 100000;
+            areaLevel += 1;
+            updateStatus('You unlocked ' + areaNames[areaLevel - 1] + '!');
+            displayMessage('Congratulations! You have expanded to ' + areaNames[areaLevel - 1] + '!');
+        } else {
+            displayMessage('To unlock a new city, you need at least £100,000, 3 trucks, 6 chainsaws, and 6 staff members.');
+        }
+    } else if (areaLevel >= maxAreas) {
+        displayMessage('All cities are already unlocked.');
+    } else {
+        displayMessage('Not enough money to unlock a new city.');
+    }
 });
 
 // Initial status update
