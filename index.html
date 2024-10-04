@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Arborist Ascend: Grow, Conquer, and Sustain</title>
+    <title>Arborist Ascend: Grow, Conquer, and Sustain your tree surgery business</title>
     <style>
         body {
             background-color: #e8f5e9;
@@ -27,7 +27,7 @@
             background-color: #66bb6a;
             color: white;
             padding: 10px;
-            margin: 5px;
+            margin: 5px 5px 5px 0;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -56,19 +56,45 @@
             color: #388e3c;
             font-weight: bold;
         }
-        /* New styles for message area */
+        /* Styles for message area with visual effects */
         #messageArea {
             margin-top: 20px;
             background-color: #e0f7fa;
             padding: 10px;
             border-radius: 5px;
             color: #006064;
+            min-height: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        #messageText {
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        /* Style for contracts section */
+        #contracts {
+            margin-top: 20px;
+            background-color: #fff3e0;
+            padding: 10px;
+            border-radius: 5px;
+            color: #bf360c;
+        }
+        #contracts h3 {
+            margin-top: 0;
+        }
+        #acceptContractButton {
+            background-color: #ff7043;
+        }
+        #acceptContractButton:hover {
+            background-color: #f4511e;
         }
     </style>
 </head>
 <body>
     <div id="game">
-        <h1>Arborist Ascend: Grow, Conquer, and Sustain</h1>
+        <h1>Arborist Ascend: Grow, Conquer, and Sustain your tree surgery business</h1>
         <div id="instructions">
             <p>Welcome to Arborist Ascend! Start by doing jobs to earn money. Use your earnings to buy equipment, hire staff, and expand your tree surgery business. Focus on growth, efficiency, and sustainability as you expand your empire!</p>
         </div>
@@ -82,9 +108,15 @@
         <button id="unlockArea">Unlock New Area (£1000)</button>
         <button id="hireStaff">Hire Staff (£1500)</button>
         <button id="prestige">Restart Business (Prestige)</button>
-        <!-- New message area -->
+        <!-- New message area with visual effects -->
         <div id="messageArea">
             <p id="messageText"></p>
+        </div>
+        <!-- Contracts section -->
+        <div id="contracts" style="display: none;">
+            <h3>Available Contract:</h3>
+            <p id="contractDetails"></p>
+            <button id="acceptContractButton">Accept Contract</button>
         </div>
         <div id="inventory">
             <h3>Your Inventory:</h3>
