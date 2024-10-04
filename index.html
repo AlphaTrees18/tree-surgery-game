@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Arborist Ascend: Grow, Conquer, and Sustain your tree surgery business</title>
+    <title>Arborist Ascend: Grow, Conquer, and Sustain Your Tree Surgery Business</title>
     <style>
-        /* [Styles remain the same as before] */
         body {
             background-color: #e8f5e9;
             font-family: Arial, sans-serif;
@@ -35,6 +34,14 @@
         }
         button:hover {
             background-color: #57a05a;
+        }
+        #workButton {
+            background-color: #ffca28;
+            color: #212121;
+            font-weight: bold;
+        }
+        #workButton:hover {
+            background-color: #fdd835;
         }
         #inventory {
             margin-top: 20px;
@@ -109,6 +116,8 @@
             align-items: center;
             justify-content: center;
             flex-direction: column;
+            text-align: center;
+            padding: 5px;
         }
         .areaBox.locked {
             background-color: #cfd8dc;
@@ -119,23 +128,24 @@
 </head>
 <body>
     <div id="game">
-        <h1>Arborist Ascend: Grow, Conquer, and Sustain your tree surgery business</h1>
+        <h1>Arborist Ascend: Grow, Conquer, and Sustain Your Tree Surgery Business</h1>
         <div id="instructions">
             <p>Welcome to Arborist Ascend! Start by doing jobs to earn money. Use your earnings to buy equipment, hire staff, and expand your tree surgery business. Focus on growth, efficiency, and sustainability as you expand your empire!</p>
             <p><strong>How to Play:</strong></p>
             <ul>
-                <li>Click "Do a Job" to perform basic jobs and earn money.</li>
+                <li>Click the <strong>"Do a Job"</strong> button to perform basic jobs and earn money.</li>
                 <li>Purchase equipment and hire staff to unlock higher-paying jobs and contracts.</li>
                 <li>Each staff member requires their own chainsaw.</li>
                 <li>Each crew (truck) needs a climber and a groundsman, each with their own chainsaw.</li>
-                <li>Unlock new areas to expand your business empire.</li>
+                <li>Unlock new areas (cities) to expand your business empire.</li>
                 <li>Accept contracts to earn more money, but ensure you have the required equipment and staff.</li>
                 <li>Monitor your fuel level and refuel when necessary.</li>
+                <li>Reach milestones to unlock new areas and face boss-level challenges!</li>
             </ul>
         </div>
-        <p id="status">You have £0.</p>
+        <p id="status">You have £500.</p>
         <p id="fuelStatus">Fuel: 100%</p>
-        <p id="timer">Next contract in: <span id="contractTimer">300</span> seconds</p>
+        <p id="timer">Next contract in: <span id="contractTimer">60</span> seconds</p>
         <button id="workButton">Do a Job</button>
         <button id="buyChainsaw">Buy Chainsaw (£200)</button>
         <button id="buyClimbingGear">Buy Climbing Gear (£500)</button>
@@ -145,7 +155,7 @@
         <button id="hireClimber">Hire Climber (£800)</button>
         <button id="hireGroundsman">Hire Groundsman (£600)</button>
         <button id="buyFuel">Buy Fuel (£50)</button>
-        <button id="unlockArea">Unlock New Area (£1000)</button>
+        <button id="unlockArea">Unlock New City (£1000)</button>
         <button id="prestige">Restart Business (Prestige)</button>
         <!-- New message area with visual effects -->
         <div id="messageArea">
@@ -172,7 +182,7 @@
                 <li>Hedge Trimmer: <span id="hedgeTrimmerStatus">Not owned</span></li>
                 <li>Climbers Hired: <span id="climberCount">0</span></li>
                 <li>Groundsmen Hired: <span id="groundsmanCount">0</span></li>
-                <li>Areas Unlocked: <span id="areaStatus">1</span></li>
+                <li>Cities Unlocked: <span id="areaStatus">1</span></li>
                 <li>Prestige Level: <span id="prestigeStatus">0</span></li>
             </ul>
         </div>
@@ -182,7 +192,7 @@
         </div>
         <div id="bossChallenge">
             <h3>Boss-Level Challenge:</h3>
-            <p id="bossChallengeInfo">Next boss challenge unlocks when you reach 3 areas unlocked!</p>
+            <p id="bossChallengeInfo">Next boss challenge unlocks when you reach 3 cities unlocked!</p>
         </div>
     </div>
     <script src="script.js"></script>
