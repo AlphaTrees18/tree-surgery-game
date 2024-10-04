@@ -16,6 +16,11 @@ let contractTimer = 60; // Contract timer starts at 60 seconds
 let currentContract = null;
 let isContractActive = false;
 let contractProgressTimer = null;
+let day = 1;
+let maxDay = 7; // One week
+let dayTimer = 30; // Each day lasts 30 seconds
+let weeklyJobs = [];
+let weeklyJobProgressTimers = {};
 
 function updateStatus(extraMessage = '') {
     document.getElementById('status').innerText = 'You have £' + money.toFixed(2) + '. ' + extraMessage;
@@ -30,6 +35,7 @@ function updateStatus(extraMessage = '') {
     document.getElementById('groundsmanCount').innerText = groundsmanCount;
     document.getElementById('areaStatus').innerText = areaLevel;
     document.getElementById('prestigeStatus').innerText = prestigeLevel;
+    document.getElementById('dayTimer').innerText = 'Day: ' + day;
     updateEmpire();
 }
 
@@ -92,6 +98,21 @@ setInterval(function() {
     }
 }, 1000);
 
+// Day timer for weekly jobs
+setInterval(function() {
+    if (dayTimer > 0) {
+        dayTimer--;
+    } else {
+        day++;
+        if (day > maxDay) {
+            day = 1;
+            generateWeeklyJobs();
+        }
+        dayTimer = 30; // Reset day timer
+        document.getElementById('dayTimer').innerText = 'Day: ' + day;
+    }
+}, 1000);
+
 function generateContract() {
     const treeServices = [
         { description: 'Oak Tree Removal', reward: 1400, fuelCost: 40 },
@@ -132,6 +153,7 @@ function startContractCountdown() {
     let countdown = 60; // Contract completion timer in seconds
     const progressFill = document.getElementById('progressFill');
     progressFill.style.width = '0%'; // Reset progress bar
+    document.getElementById('contractProgress').style.display = 'block';
 
     if (contractProgressTimer) {
         clearInterval(contractProgressTimer);
@@ -158,4 +180,81 @@ function completeContract() {
     updateStatus('Contract completed!');
     displayMessage('You completed the contract and earned £' + earnings.toFixed(2) + '!');
     document.getElementById('contracts').style.display = 'none';
+    document.getElementById('contractProgress').style.display = 'none';
 }
+
+// Function to generate weekly jobs
+function generateWeeklyJobs() {
+    weeklyJobs = [];
+    for (let i = 0; i < 5; i++) {
+        const job = {
+            id: i,
+            description: 'Weekly Job ' + (i + 1),
+            reward: 2000 + i * 500,
+            requiredEquipment: i % 2 === 0 ? 'Chainsaw' : 'Stump Grinder',
+            isCompleted: false
+        };
+        weeklyJobs.push(job);
+    }
+    displayWeeklyJobs();
+}
+
+function displayWeeklyJobs() {
+    const jobsList = document.getElementById('jobsList');
+    jobsList.innerHTML = '';
+    weeklyJobs.forEach(job => {
+        const jobDiv = document.createElement('div');
+        jobDiv.classList.add('jobItem');
+        jobDiv.innerText = `${job.description} - Reward: £${job.reward}`;
+        const acceptButton = document.createElement('button');
+        acceptButton.innerText = 'Accept Job';
+        acceptButton.addEventListener('click', () => acceptWeeklyJob(job));
+        jobDiv.appendChild(acceptButton);
+        jobsList.appendChild(jobDiv);
+    });
+}
+
+function acceptWeeklyJob(job) {
+    if (weeklyJobProgressTimers[job.id]) {
+        displayMessage('You are already working on this job!');
+        return;
+    }
+    if (fuel < 20) {
+        displayMessage('Not enough fuel to accept this job.');
+        return;
+    }
+    if (job.requiredEquipment === 'Stump Grinder' && stumpGrinderCount === 0) {
+        displayMessage('You need a Stump Grinder to accept this job.');
+        return;
+    }
+    displayMessage('You accepted ' + job.description);
+    startWeeklyJobCountdown(job);
+}
+
+function startWeeklyJobCountdown(job) {
+    let countdown = 30; // Job completion timer in seconds
+    weeklyJobProgressTimers[job.id] = setInterval(() => {
+        if (countdown > 0) {
+            countdown--;
+        } else {
+            clearInterval(weeklyJobProgressTimers[job.id]);
+            delete weeklyJobProgressTimers[job.id];
+            completeWeeklyJob(job);
+        }
+    }, 1000);
+}
+
+function completeWeeklyJob(job) {
+    let earnings = job.reward * (1 + prestigeLevel * 0.1);
+    money += earnings;
+    fuel -= 20;
+    if (fuel < 0) fuel = 0;
+    updateStatus('Weekly job completed!');
+    displayMessage('You completed ' + job.description + ' and earned £' + earnings.toFixed(2) + '!');
+    job.isCompleted = true;
+    displayWeeklyJobs(); // Refresh the job list
+}
+
+// Initialize the game
+generateWeeklyJobs();
+updateStatus();
