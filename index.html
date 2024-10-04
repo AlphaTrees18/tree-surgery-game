@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Arborist Ascend: Grow, Conquer, and Sustain your tree surgery business</title>
     <style>
+        /* [Styles remain the same as before] */
         body {
             background-color: #e8f5e9;
             font-family: Arial, sans-serif;
@@ -124,9 +125,11 @@
             <p><strong>How to Play:</strong></p>
             <ul>
                 <li>Click "Do a Job" to perform basic jobs and earn money.</li>
-                <li>Purchase equipment to unlock higher-paying jobs and contracts.</li>
+                <li>Purchase equipment and hire staff to unlock higher-paying jobs and contracts.</li>
+                <li>Each staff member requires their own chainsaw.</li>
+                <li>Each crew (van) needs a climber and a groundsman, each with their own chainsaw.</li>
                 <li>Unlock new areas to expand your business empire.</li>
-                <li>Accept contracts to earn more money, but ensure you have the required equipment.</li>
+                <li>Accept contracts to earn more money, but ensure you have the required equipment and staff.</li>
                 <li>Monitor your fuel level and refuel when necessary.</li>
             </ul>
         </div>
@@ -134,11 +137,15 @@
         <p id="fuelStatus">Fuel: 100%</p>
         <p id="timer">Next contract in: <span id="contractTimer">300</span> seconds</p>
         <button id="workButton">Do a Job</button>
-        <button id="buyStumpGrinder">Buy Stump Grinder (£700)</button>
+        <button id="buyChainsaw">Buy Chainsaw (£200)</button>
+        <button id="buyClimbingGear">Buy Climbing Gear (£500)</button>
         <button id="buyHedgeTrimmer">Buy Hedge Trimmer (£300)</button>
+        <button id="buyStumpGrinder">Buy Stump Grinder (£700)</button>
+        <button id="buyTruck">Buy Truck (£1000)</button>
+        <button id="hireClimber">Hire Climber (£800)</button>
+        <button id="hireGroundsman">Hire Groundsman (£600)</button>
         <button id="buyFuel">Buy Fuel (£50)</button>
         <button id="unlockArea">Unlock New Area (£1000)</button>
-        <button id="hireStaff">Hire Staff (£1500)</button>
         <button id="prestige">Restart Business (Prestige)</button>
         <!-- New message area with visual effects -->
         <div id="messageArea">
@@ -157,12 +164,14 @@
         <div id="inventory">
             <h3>Your Inventory:</h3>
             <ul>
-                <li>Truck: <span id="truckStatus">Owned</span></li>
-                <li>Chainsaw: <span id="chainsawStatus">Owned</span></li>
-                <li>Chipper: <span id="chipperStatus">Owned</span></li>
+                <li>Trucks: <span id="truckCount">1</span></li>
+                <li>Chippers: <span id="chipperCount">1</span></li>
+                <li>Chainsaws: <span id="chainsawCount">1</span></li>
+                <li>Climbing Gear: <span id="climbingGearStatus">Not owned</span></li>
                 <li>Stump Grinder: <span id="stumpGrinderStatus">Not owned</span></li>
                 <li>Hedge Trimmer: <span id="hedgeTrimmerStatus">Not owned</span></li>
-                <li>Staff Hired: <span id="staffStatus">No</span></li>
+                <li>Climbers Hired: <span id="climberCount">0</span></li>
+                <li>Groundsmen Hired: <span id="groundsmanCount">0</span></li>
                 <li>Areas Unlocked: <span id="areaStatus">1</span></li>
                 <li>Prestige Level: <span id="prestigeStatus">0</span></li>
             </ul>
