@@ -33,6 +33,11 @@
             font-weight: bold;
             color: #2e7d32;
         }
+        #currentAreaDisplay {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
         #boxes {
             display: flex;
             flex-wrap: wrap;
@@ -131,6 +136,7 @@
         </div>
 
         <div id="moneyDisplay">Money: £5000</div>
+        <div id="currentAreaDisplay">Current Area: London</div>
 
         <div id="boxes">
             <div class="box" id="box1">
@@ -181,6 +187,7 @@
             <button onclick="buyTool('woodChipper')">Buy Wood Chipper (£5000)</button>
             <button onclick="buyFuel()">Buy Fuel (£100)</button>
             <button onclick="bidForJob()">Bid for Additional Job (50% chance - £100)</button>
+            <button onclick="unlockArea()">Unlock New Area</button>
         </div>
     </div>
 
