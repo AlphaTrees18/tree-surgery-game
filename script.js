@@ -18,6 +18,7 @@ let areas = [
     { name: "Glasgow", cost: 275000 }
 ];
 let currentArea = areas[0]; // Start with London
+let contractTimeLeft = 60; // Timer for contracts
 
 // Function to update the player's status
 function updateStatus(message) {
@@ -87,21 +88,21 @@ function hireStaff(type) {
 
 // Function to start a job
 function startJob(jobId) {
-    if (jobInProgress[jobId] || availableCrews <= 0 || climberCount < availableCrews || groundsmanCount < availableCrews) {
-        alert("You don't have enough crews available or this job is already in progress, or you lack enough staff!");
+    if (jobInProgress[jobId] || availableCrews <= 0) {
+        alert("You don't have enough crews available or this job is already in progress!");
         return;
     }
 
     // Check if the job requires specific equipment
-    if (jobId === 1 && hedgeTrimmerCount <= 0) { // Hedge trimming requires a hedge trimmer
+    if (jobId === 1 && hedgeTrimmerCount <= 0) {
         alert("You need a hedge trimmer for this job!");
         return;
     }
-    if (jobId === 2 && stumpGrinderCount <= 0) { // Stump grinding requires a stump grinder
+    if (jobId === 2 && stumpGrinderCount <= 0) {
         alert("You need a stump grinder for this job!");
         return;
     }
-    if (jobId === 3 && chainsawCount <= 0) { // Tree pruning requires a chainsaw
+    if (jobId === 3 && chainsawCount <= 0) {
         alert("You need a chainsaw for this job!");
         return;
     }
@@ -112,7 +113,7 @@ function startJob(jobId) {
     let jobElement = document.getElementById("job" + jobId);
     jobElement.classList.add("in-progress");
 
-    let jobTime = 60; // Time in seconds for job completion (represents a day)
+    let jobTime = 60; // Time in seconds for job completion
     let width = 0;
     let progressInterval = setInterval(() => {
         if (width >= 100) {
@@ -151,7 +152,7 @@ function completeJob(jobId) {
 function bidForJob() {
     if (money >= 100) {
         money -= 100;
-        if (Math.random() > 0.5) {
+        if (Math.random() <= 0.3) {
             let newJobId = Object.keys(jobInProgress).length + 1;
             let newJob = document.createElement("div");
             newJob.className = "job";
@@ -181,6 +182,17 @@ function unlockArea() {
         alert("Not enough money to unlock a new area or all areas are already unlocked.");
     }
 }
+
+// Function for the contracts timer
+setInterval(function() {
+    if (contractTimeLeft > 0) {
+        contractTimeLeft--;
+        document.getElementById('contractTimeLeft').innerText = contractTimeLeft;
+    } else {
+        contractTimeLeft = 60; // Reset timer to 60 seconds
+        updateStatus("A new contract is available!");
+    }
+}, 1000); // Run every second
 
 // Initial status update
 updateStatus();
