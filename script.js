@@ -19,11 +19,6 @@ let areas = [
 ];
 let currentArea = areas[0]; // Start with London
 
-// Prompt user for their tree surgery business name
-let businessName = prompt("Enter your tree surgery business name:", "Your Tree Surgery Business");
-document.title = businessName + " - Arborist Ascend";
-document.getElementById('businessNameDisplay').innerText = businessName;
-
 // Function to update the player's status
 function updateStatus(message) {
     document.getElementById('truckCount').innerText = availableCrews;
