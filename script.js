@@ -7,6 +7,7 @@ let hasHedgeTrimmer = false;
 let fuel = 100;
 let prestigeLevel = 0;
 let areaLevel = 1;
+let maxAreas = 5; // Maximum number of areas
 let staffHired = false;
 let contractTimer = 300;
 let contractsAvailable = 0;
@@ -59,6 +60,24 @@ function updateStatus(extraMessage = '') {
     document.getElementById('prestigeStatus').innerText = prestigeLevel;
     updateAwards();
     updateBossChallenge();
+    updateEmpire();
+}
+
+// Function to update the empire visual representation
+function updateEmpire() {
+    const empireDiv = document.getElementById('empire');
+    empireDiv.innerHTML = ''; // Clear existing area boxes
+    for (let i = 1; i <= maxAreas; i++) {
+        const areaBox = document.createElement('div');
+        areaBox.classList.add('areaBox');
+        if (i <= areaLevel) {
+            areaBox.innerText = 'Area ' + i;
+        } else {
+            areaBox.classList.add('locked');
+            areaBox.innerText = 'Locked';
+        }
+        empireDiv.appendChild(areaBox);
+    }
 }
 
 // Function to handle working
@@ -68,6 +87,11 @@ document.getElementById('workButton').addEventListener('click', function() {
         return;
     }
     if (isContractActive) {
+        // Check if player has required equipment
+        if (!hasRequiredEquipment(currentContract)) {
+            displayMessage('You need a ' + currentContract.requiredEquipment + ' to complete this contract.');
+            return;
+        }
         // If a contract is active, earnings are increased
         let earnings = currentContract.reward;
         money += earnings;
@@ -94,6 +118,18 @@ document.getElementById('workButton').addEventListener('click', function() {
     }
 });
 
+// Function to check if player has required equipment
+function hasRequiredEquipment(contract) {
+    switch (contract.requiredEquipment) {
+        case 'Stump Grinder':
+            return hasStumpGrinder;
+        case 'Hedge Trimmer':
+            return hasHedgeTrimmer;
+        default:
+            return true;
+    }
+}
+
 // Function to handle buying items
 function buyItem(cost, statusVariable, statusElement, successMessage) {
     if (money >= cost && !statusVariable) {
@@ -102,13 +138,13 @@ function buyItem(cost, statusVariable, statusElement, successMessage) {
         document.getElementById(statusElement).innerText = 'Owned';
         updateStatus(successMessage);
         displayMessage(successMessage);
-        return true;
+        return statusVariable;
     } else if (statusVariable) {
         displayMessage('You already own this item!');
     } else {
         displayMessage('Not enough money to buy this item.');
     }
-    return false;
+    return statusVariable;
 }
 
 document.getElementById('buyStumpGrinder').addEventListener('click', function() {
@@ -133,12 +169,14 @@ document.getElementById('buyFuel').addEventListener('click', function() {
 
 // Function to unlock new area
 document.getElementById('unlockArea').addEventListener('click', function() {
-    if (money >= 1000) {
+    if (money >= 1000 && areaLevel < maxAreas) {
         money -= 1000;
         areaLevel += 1;
         updateStatus('You unlocked a new area!');
         displayMessage('You unlocked a new area!');
         checkForAwards();
+    } else if (areaLevel >= maxAreas) {
+        displayMessage('All areas are already unlocked.');
     } else {
         displayMessage('Not enough money to unlock a new area.');
     }
@@ -214,14 +252,14 @@ setInterval(function() {
 // Function to generate a new contract
 function generateContract() {
     const treeServices = [
-        { description: 'Oak Tree Removal', reward: 700, fuelCost: 40 },
-        { description: 'Crown Reduction of Beech Tree', reward: 500, fuelCost: 25 },
-        { description: 'Stump Grinding', reward: 300, fuelCost: 20 },
-        { description: 'Hedge Cutting', reward: 250, fuelCost: 15 },
-        { description: 'Sycamore Tree Pruning', reward: 600, fuelCost: 30 }
+        { description: 'Oak Tree Removal', reward: 700, fuelCost: 40, requiredEquipment: 'Chainsaw' },
+        { description: 'Crown Reduction of Beech Tree', reward: 500, fuelCost: 25, requiredEquipment: 'Chainsaw' },
+        { description: 'Stump Grinding', reward: 300, fuelCost: 20, requiredEquipment: 'Stump Grinder' },
+        { description: 'Hedge Cutting', reward: 250, fuelCost: 15, requiredEquipment: 'Hedge Trimmer' },
+        { description: 'Sycamore Tree Pruning', reward: 600, fuelCost: 30, requiredEquipment: 'Chainsaw' }
     ];
     currentContract = treeServices[Math.floor(Math.random() * treeServices.length)];
-    document.getElementById('contractDetails').innerText = `Contract: ${currentContract.description} - Reward: £${currentContract.reward}, Fuel Cost: ${currentContract.fuelCost}%`;
+    document.getElementById('contractDetails').innerText = `Contract: ${currentContract.description} - Reward: £${currentContract.reward}, Fuel Cost: ${currentContract.fuelCost}%, Required Equipment: ${currentContract.requiredEquipment}`;
     document.getElementById('contracts').style.display = 'block';
     displayMessage('A new contract is available!');
 }
@@ -234,6 +272,10 @@ document.getElementById('acceptContractButton').addEventListener('click', functi
     }
     if (fuel < currentContract.fuelCost) {
         displayMessage('Not enough fuel to accept this contract.');
+        return;
+    }
+    if (!hasRequiredEquipment(currentContract)) {
+        displayMessage('You need a ' + currentContract.requiredEquipment + ' to accept this contract.');
         return;
     }
     isContractActive = true;
