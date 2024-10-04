@@ -5,16 +5,16 @@
     <title>Arborist Ascend: Grow, Conquer, and Sustain</title>
     <style>
         body {
-            background-color: #e8f5e9; /* Light green background */
+            background-color: #e8f5e9;
             font-family: Arial, sans-serif;
-            color: #2e7d32; /* Dark green text */
+            color: #2e7d32;
             margin: 0;
             padding: 20px;
         }
         #game {
             max-width: 700px;
             margin: auto;
-            background-color: #ffffff; /* White background for game area */
+            background-color: #ffffff;
             padding: 20px;
             border: 2px solid #2e7d32;
             border-radius: 10px;
@@ -24,7 +24,7 @@
             color: #1b5e20;
         }
         button {
-            background-color: #66bb6a; /* Green buttons */
+            background-color: #66bb6a;
             color: white;
             padding: 10px;
             margin: 5px;
@@ -49,12 +49,20 @@
         #bossChallenge {
             margin-top: 20px;
             padding: 15px;
-            background-color: #ffeb3b; /* Highlighted section for boss-level challenge */
+            background-color: #ffeb3b;
             border-radius: 10px;
         }
         .owned {
             color: #388e3c;
             font-weight: bold;
+        }
+        /* New styles for message area */
+        #messageArea {
+            margin-top: 20px;
+            background-color: #e0f7fa;
+            padding: 10px;
+            border-radius: 5px;
+            color: #006064;
         }
     </style>
 </head>
@@ -74,6 +82,10 @@
         <button id="unlockArea">Unlock New Area (£1000)</button>
         <button id="hireStaff">Hire Staff (£1500)</button>
         <button id="prestige">Restart Business (Prestige)</button>
+        <!-- New message area -->
+        <div id="messageArea">
+            <p id="messageText"></p>
+        </div>
         <div id="inventory">
             <h3>Your Inventory:</h3>
             <ul>
@@ -93,6 +105,6 @@
             <p id="bossChallengeInfo">Next boss challenge unlocks when you reach 3 areas unlocked!</p>
         </div>
     </div>
-    <script src="script.js"></script> <!-- Link to the JavaScript file -->
+    <script src="script.js"></script>
 </body>
 </html>
