@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Arborist Ascend: Grow, Conquer, and Sustain Your Tree Surgery Business</title>
     <style>
+        /* [Styles remain the same with minor additions for the progress bar] */
         body {
             background-color: #e8f5e9;
             font-family: Arial, sans-serif;
@@ -96,18 +97,20 @@
         #acceptContractButton:hover {
             background-color: #f4511e;
         }
+        /* Progress bar styles */
         #contractProgress {
             width: 100%;
             height: 20px;
-            background-color: red;
+            background-color: #e0e0e0;
             border-radius: 5px;
             margin-top: 10px;
             position: relative;
+            overflow: hidden;
         }
         #progressFill {
             height: 100%;
             width: 0%;
-            background-color: green;
+            background-color: #76c7c0;
             border-radius: 5px;
             transition: width 1s linear;
         }
@@ -136,6 +139,26 @@
             border: 2px solid #90a4ae;
             color: #90a4ae;
         }
+        /* Styles for weekly jobs section */
+        #weeklyJobs {
+            margin-top: 20px;
+            background-color: #fffde7;
+            padding: 10px;
+            border-radius: 5px;
+            color: #f57f17;
+        }
+        #weeklyJobs h3 {
+            margin-top: 0;
+        }
+        .jobItem {
+            margin-bottom: 10px;
+        }
+        .jobItem button {
+            margin-left: 10px;
+        }
+        #dayTimer {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -149,8 +172,8 @@
                 <li>Purchase equipment and hire staff to unlock higher-paying jobs and contracts.</li>
                 <li>Each staff member requires their own chainsaw.</li>
                 <li>Each crew (truck) needs a climber and a groundsman, each with their own chainsaw.</li>
-                <li>Unlock new cities to expand your business empire.</li>
                 <li>Accept contracts to earn more money, but ensure you have the required equipment and staff.</li>
+                <li>Complete weekly jobs before the week ends!</li>
                 <li>Monitor your fuel level and refuel when necessary.</li>
                 <li>Prestige to earn permanent bonuses and unlock advanced content.</li>
             </ul>
@@ -158,6 +181,7 @@
         <p id="status">You have £5000.</p>
         <p id="fuelStatus">Fuel: 100%</p>
         <p id="timer">Next contract in: <span id="contractTimer">60</span> seconds</p>
+        <p id="dayTimer">Day: 1</p>
         <button id="workButton">Do a Job</button>
         <button id="buyChainsaw">Buy Chainsaw (£500)</button>
         <button id="buyClimbingGear">Buy Climbing Gear (£1000)</button>
@@ -176,8 +200,15 @@
             <h3>Available Contract:</h3>
             <p id="contractDetails"></p>
             <button id="acceptContractButton">Accept Contract</button>
-            <div id="contractProgress">
+            <div id="contractProgress" style="display: none;">
                 <div id="progressFill"></div>
+            </div>
+        </div>
+        <!-- Weekly Jobs Section -->
+        <div id="weeklyJobs">
+            <h3>Weekly Jobs</h3>
+            <div id="jobsList">
+                <!-- Jobs will be dynamically added here -->
             </div>
         </div>
         <div id="empire"></div>
