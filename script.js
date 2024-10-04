@@ -1,5 +1,5 @@
 let availableCrews = 1; // Number of available crews (trucks)
-let jobInProgress = false;
+let jobInProgress = {};
 let jobsCompleted = 0;
 let chainsawCount = 1; // Start with 1 chainsaw
 let hedgeTrimmerCount = 0;
@@ -55,8 +55,8 @@ function buyFuel() {
 
 // Function to start a job
 function startJob(jobId) {
-    if (jobInProgress || availableCrews <= 0) {
-        alert("You don't have enough crews available or a job is already in progress!");
+    if (jobInProgress[jobId] || availableCrews <= 0) {
+        alert("You don't have enough crews available or this job is already in progress!");
         return;
     }
 
@@ -70,10 +70,13 @@ function startJob(jobId) {
         return;
     }
 
-    jobInProgress = true;
+    jobInProgress[jobId] = true;
     availableCrews--;
     
-    let jobTime = 10; // Time in seconds for job completion (can adjust based on job type)
+    let jobElement = document.getElementById("job" + jobId);
+    jobElement.classList.add("in-progress");
+
+    let jobTime = 60; // Time in seconds for job completion (represents a day)
     let width = 0;
     let progressInterval = setInterval(() => {
         if (width >= 100) {
@@ -88,22 +91,25 @@ function startJob(jobId) {
 
 // Function to complete the job
 function completeJob(jobId) {
-    jobInProgress = false;
+    jobInProgress[jobId] = false;
     availableCrews++;
     jobsCompleted++;
     progressBarElement.style.width = "0%";
-    
+
     let earnings = 0;
     if (jobId === 1) earnings = 500;
     else if (jobId === 2) earnings = 300;
-    else if (jobId === 3) earnings = 400;
-    
+    else if (jobId === 3) earnings = 700;
+
     money += earnings;
     fuelCount -= 20; // Deduct fuel per job
     if (fuelCount < 0) fuelCount = 0;
-    
+
+    let jobElement = document.getElementById("job" + jobId);
+    jobElement.classList.remove("in-progress");
+    jobElement.classList.add("completed");
     updateStatus("Job " + jobId + " completed! You've earned £" + earnings + ".");
-    
+
     // Unlock new boxes as progress is made
     if (jobsCompleted >= 3 && document.getElementById("box2").classList.contains("locked")) {
         unlockBox(2);
@@ -118,4 +124,26 @@ function unlockBox(boxId) {
     let box = document.getElementById("box" + boxId);
     box.classList.remove("locked");
     box.innerHTML = "<p>Truck " + boxId + "</p><p>Ready</p>";
+}
+
+// Function to bid for additional jobs
+function bidForJob() {
+    if (money >= 100) {
+        money -= 100;
+        let chance = Math.random();
+        if (chance > 0.5) {
+            alert("Bid successful! You got an additional job!");
+            let newJobId = document.querySelectorAll('.job').length + 1;
+            let jobDiv = document.createElement('div');
+            jobDiv.classList.add('job');
+            jobDiv.setAttribute('id', 'job' + newJobId);
+            jobDiv.innerHTML = `<span>Additional Job - £600 (60 sec)</span> <button onclick="startJob(${newJobId})">Start</button>`;
+            document.getElementById('jobsList').appendChild(jobDiv);
+        } else {
+            alert("Bid failed. Better luck next time!");
+        }
+        updateStatus();
+    } else {
+        alert("Not enough money to place a bid.");
+    }
 }
