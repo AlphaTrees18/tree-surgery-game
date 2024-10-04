@@ -1,16 +1,17 @@
 let money = 0;
-let hasChainsaw = false;
-let hasVan = false;
+let hasChainsaw = true;
+let hasTruck = true;
+let hasChipper = true;
 let hasStumpGrinder = false;
 let hasHedgeTrimmer = false;
 let fuel = 100;
 let prestigeLevel = 0;
 let areaLevel = 1;
 let staffHired = false;
-let contractTimer = 180;
+let contractTimer = 300;
 let contractsAvailable = 0;
 let awards = [];
-let baseContractTime = 180; // Starting timer for contracts
+let baseContractTime = 300; // Starting timer for contracts
 let messageQueue = [];
 let isDisplayingMessage = false;
 let currentContract = null;
@@ -49,7 +50,8 @@ function updateStatus(extraMessage = '') {
     document.getElementById('status').innerText = 'You have £' + money + '. ' + extraMessage;
     document.getElementById('fuelStatus').innerText = 'Fuel: ' + fuel + '%';
     document.getElementById('chainsawStatus').innerText = hasChainsaw ? 'Owned' : 'Not owned';
-    document.getElementById('vanStatus').innerText = hasVan ? 'Owned' : 'Not owned';
+    document.getElementById('truckStatus').innerText = hasTruck ? 'Owned' : 'Not owned';
+    document.getElementById('chipperStatus').innerText = hasChipper ? 'Owned' : 'Not owned';
     document.getElementById('stumpGrinderStatus').innerText = hasStumpGrinder ? 'Owned' : 'Not owned';
     document.getElementById('hedgeTrimmerStatus').innerText = hasHedgeTrimmer ? 'Owned' : 'Not owned';
     document.getElementById('staffStatus').innerText = staffHired ? 'Yes' : 'No';
@@ -79,7 +81,8 @@ document.getElementById('workButton').addEventListener('click', function() {
     } else {
         let earnings = 50; // Base earning
         if (hasChainsaw) earnings += 50;
-        if (hasVan) earnings += 100;
+        if (hasTruck) earnings += 100;
+        if (hasChipper) earnings += 150;
         if (hasStumpGrinder) earnings += 150;
         if (hasHedgeTrimmer) earnings += 75;
         if (staffHired) earnings *= 1.5; // Staff increases earnings
@@ -92,34 +95,28 @@ document.getElementById('workButton').addEventListener('click', function() {
 });
 
 // Function to handle buying items
-function buyItem(item, cost, statusVariable, statusElement, successMessage) {
+function buyItem(cost, statusVariable, statusElement, successMessage) {
     if (money >= cost && !statusVariable) {
         money -= cost;
         statusVariable = true;
         document.getElementById(statusElement).innerText = 'Owned';
         updateStatus(successMessage);
         displayMessage(successMessage);
+        return true;
     } else if (statusVariable) {
         displayMessage('You already own this item!');
     } else {
         displayMessage('Not enough money to buy this item.');
     }
+    return false;
 }
 
-document.getElementById('buyChainsaw').addEventListener('click', function() {
-    buyItem('chainsaw', 200, hasChainsaw, 'chainsawStatus', 'You bought a chainsaw!');
-});
-
-document.getElementById('buyVan').addEventListener('click', function() {
-    buyItem('van', 500, hasVan, 'vanStatus', 'You bought a van!');
-});
-
 document.getElementById('buyStumpGrinder').addEventListener('click', function() {
-    buyItem('stumpGrinder', 700, hasStumpGrinder, 'stumpGrinderStatus', 'You bought a stump grinder!');
+    hasStumpGrinder = buyItem(700, hasStumpGrinder, 'stumpGrinderStatus', 'You bought a stump grinder!');
 });
 
 document.getElementById('buyHedgeTrimmer').addEventListener('click', function() {
-    buyItem('hedgeTrimmer', 300, hasHedgeTrimmer, 'hedgeTrimmerStatus', 'You bought a hedge trimmer!');
+    hasHedgeTrimmer = buyItem(300, hasHedgeTrimmer, 'hedgeTrimmerStatus', 'You bought a hedge trimmer!');
 });
 
 // Function to handle buying fuel
@@ -167,8 +164,9 @@ document.getElementById('prestige').addEventListener('click', function() {
     if (money >= 5000) {
         prestigeLevel += 1;
         money = 0;
-        hasChainsaw = false;
-        hasVan = false;
+        hasChainsaw = true;
+        hasTruck = true;
+        hasChipper = true;
         hasStumpGrinder = false;
         hasHedgeTrimmer = false;
         fuel = 100;
@@ -188,7 +186,8 @@ function automateWork() {
         if (fuel <= 0) return;
         let earnings = 50;
         if (hasChainsaw) earnings += 50;
-        if (hasVan) earnings += 100;
+        if (hasTruck) earnings += 100;
+        if (hasChipper) earnings += 150;
         if (hasStumpGrinder) earnings += 150;
         if (hasHedgeTrimmer) earnings += 75;
         if (staffHired) earnings *= 1.5;
