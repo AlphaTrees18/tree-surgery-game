@@ -125,6 +125,11 @@
         #inventory button:hover {
             background-color: #57a05a;
         }
+        #contractsTimer {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
     </style>
 </head>
 <body>
@@ -171,6 +176,8 @@
             <div id="progress-bar"></div>
         </div>
 
+        <div id="contractsTimer">Next contract available in: <span id="contractTimeLeft">60</span> seconds</div>
+
         <div id="inventory">
             <h3>Your Inventory:</h3>
             <ul>
@@ -190,7 +197,7 @@
             <button onclick="buyTool('stumpGrinder')">Buy Stump Grinder (£3000)</button>
             <button onclick="buyTool('woodChipper')">Buy Wood Chipper (£5000)</button>
             <button onclick="buyFuel()">Buy Fuel (£100)</button>
-            <button onclick="bidForJob()">Bid for Additional Job (50% chance - £100)</button>
+            <button onclick="bidForJob()">Bid for Additional Job (30% chance - £100)</button>
             <button onclick="unlockArea()">Unlock New Area (£100,000)</button>
         </div>
     </div>
