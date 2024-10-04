@@ -15,6 +15,7 @@ let areaNames = ['London', 'Birmingham', 'Manchester', 'Glasgow', 'Bristol'];
 let contractTimer = 60; // Contract timer starts at 60 seconds
 let currentContract = null;
 let isContractActive = false;
+let contractProgressTimer = null;
 
 function updateStatus(extraMessage = '') {
     document.getElementById('status').innerText = 'You have £' + money.toFixed(2) + '. ' + extraMessage;
@@ -54,27 +55,19 @@ document.getElementById('workButton').addEventListener('click', function() {
         return;
     }
     if (isContractActive) {
-        let earnings = currentContract.reward * (1 + prestigeLevel * 0.1);
-        money += earnings;
-        fuel -= currentContract.fuelCost;
-        if (fuel < 0) fuel = 0;
-        displayMessage('You completed a contract and earned £' + earnings.toFixed(2) + '!');
-        isContractActive = false;
-        currentContract = null;
-        document.getElementById('contracts').style.display = 'none';
-        updateStatus();
-    } else {
-        let earnings = 500; // Base job earnings
-        if (hedgeTrimmerCount > 0) earnings += 150;
-        if (stumpGrinderCount > 0) earnings += 300;
-        let bonus = areaLevel * 100;
-        let prestigeBonus = earnings * (prestigeLevel * 0.1);
-        money += earnings + bonus + prestigeBonus;
-        fuel -= 10; // Fuel consumption per job
-        if (fuel < 0) fuel = 0;
-        updateStatus();
-        displayMessage('You earned £' + (earnings + bonus + prestigeBonus).toFixed(2) + ' from doing a job.');
+        displayMessage('You are already working on a contract!');
+        return;
     }
+    let earnings = 500; // Base job earnings
+    if (hedgeTrimmerCount > 0) earnings += 150;
+    if (stumpGrinderCount > 0) earnings += 300;
+    let bonus = areaLevel * 100;
+    let prestigeBonus = earnings * (prestigeLevel * 0.1);
+    money += earnings + bonus + prestigeBonus;
+    fuel -= 10; // Fuel consumption per job
+    if (fuel < 0) fuel = 0;
+    updateStatus();
+    displayMessage('You earned £' + (earnings + bonus + prestigeBonus).toFixed(2) + ' from doing a job.');
 });
 
 function displayMessage(message) {
@@ -132,32 +125,37 @@ document.getElementById('acceptContractButton').addEventListener('click', functi
     }
     isContractActive = true;
     displayMessage('You accepted a contract: ' + currentContract.description);
+    startContractCountdown();
 });
 
-document.getElementById('buyHedgeTrimmer').addEventListener('click', function() {
-    hedgeTrimmerCount = buyItem(800, hedgeTrimmerCount, 'hedgeTrimmerCount', 'You bought a hedge trimmer!');
-});
+function startContractCountdown() {
+    let countdown = 60; // Contract completion timer in seconds
+    const progressFill = document.getElementById('progressFill');
+    progressFill.style.width = '0%'; // Reset progress bar
 
-document.getElementById('buyStumpGrinder').addEventListener('click', function() {
-    stumpGrinderCount = buyItem(1500, stumpGrinderCount, 'stumpGrinderCount', 'You bought a stump grinder!');
-});
-
-document.getElementById('unlockArea').addEventListener('click', function() {
-    let staffCount = climberCount + groundsmanCount;
-    if (money >= 100000 && areaLevel < maxAreas) {
-        if (truckCount >= 3 && chainsawCount >= 6 && staffCount >= 6) {
-            money -= 100000;
-            areaLevel += 1;
-            updateStatus('You unlocked ' + areaNames[areaLevel - 1] + '!');
-            displayMessage('Congratulations! You have expanded to ' + areaNames[areaLevel - 1] + '!');
-        } else {
-            displayMessage('To unlock a new city, you need at least £100,000, 3 trucks, 6 chainsaws, and 6 staff members.');
-        }
-    } else if (areaLevel >= maxAreas) {
-        displayMessage('All cities are already unlocked.');
-    } else {
-        displayMessage('Not enough money to unlock a new city.');
+    if (contractProgressTimer) {
+        clearInterval(contractProgressTimer);
     }
-});
 
-updateStatus();
+    contractProgressTimer = setInterval(() => {
+        if (countdown > 0) {
+            countdown--;
+            let progressPercent = ((60 - countdown) / 60) * 100;
+            progressFill.style.width = progressPercent + '%';
+        } else {
+            clearInterval(contractProgressTimer);
+            isContractActive = false;
+            completeContract();
+        }
+    }, 1000);
+}
+
+function completeContract() {
+    let earnings = currentContract.reward * (1 + prestigeLevel * 0.1);
+    money += earnings;
+    fuel -= currentContract.fuelCost;
+    if (fuel < 0) fuel = 0;
+    updateStatus('Contract completed!');
+    displayMessage('You completed the contract and earned £' + earnings.toFixed(2) + '!');
+    document.getElementById('contracts').style.display = 'none';
+}
