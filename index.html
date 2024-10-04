@@ -43,6 +43,16 @@
             border-color: #90a4ae;
             color: #90a4ae;
         }
+        .in-progress {
+            background-color: #ffca28;
+            border-color: #ff9800;
+            color: #424242;
+        }
+        .completed {
+            background-color: #81c784;
+            border-color: #388e3c;
+            color: white;
+        }
         #jobsList {
             margin-top: 20px;
             background-color: #fff3e0;
@@ -118,15 +128,15 @@
         <div id="jobsList">
             <h3>Available Jobs</h3>
             <div class="job" id="job1">
-                <span>Tree Removal - £500</span>
+                <span>Hedge Cutting - £500 (60 sec)</span>
                 <button onclick="startJob(1)">Start</button>
             </div>
             <div class="job" id="job2">
-                <span>Hedge Trimming - £300</span>
+                <span>Stump Grinding - £300 (60 sec)</span>
                 <button onclick="startJob(2)">Start</button>
             </div>
             <div class="job" id="job3">
-                <span>Stump Grinding - £400</span>
+                <span>Oak Tree Pruning - £700 (60 sec)</span>
                 <button onclick="startJob(3)">Start</button>
             </div>
         </div>
@@ -148,6 +158,7 @@
             <button onclick="buyTool('hedgeTrimmer')">Buy Hedge Trimmer (£300)</button>
             <button onclick="buyTool('stumpGrinder')">Buy Stump Grinder (£400)</button>
             <button onclick="buyFuel()">Buy Fuel (£100)</button>
+            <button onclick="bidForJob()">Bid for Additional Job (50% chance - £100)</button>
         </div>
     </div>
 
