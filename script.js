@@ -1,14 +1,16 @@
 let money = 0;
 let hasChainsaw = false;
 let hasVan = false;
+let hasStumpGrinder = false;
+let hasHedgeTrimmer = false;
 let fuel = 100;
 let prestigeLevel = 0;
 let areaLevel = 1;
 let staffHired = false;
-let contractTimer = 10;
+let contractTimer = 180;
 let contractsAvailable = 0;
 let awards = [];
-let baseContractTime = 10; // Starting timer for contracts
+let baseContractTime = 180; // Starting timer for contracts
 let messageQueue = [];
 let isDisplayingMessage = false;
 let currentContract = null;
@@ -48,6 +50,8 @@ function updateStatus(extraMessage = '') {
     document.getElementById('fuelStatus').innerText = 'Fuel: ' + fuel + '%';
     document.getElementById('chainsawStatus').innerText = hasChainsaw ? 'Owned' : 'Not owned';
     document.getElementById('vanStatus').innerText = hasVan ? 'Owned' : 'Not owned';
+    document.getElementById('stumpGrinderStatus').innerText = hasStumpGrinder ? 'Owned' : 'Not owned';
+    document.getElementById('hedgeTrimmerStatus').innerText = hasHedgeTrimmer ? 'Owned' : 'Not owned';
     document.getElementById('staffStatus').innerText = staffHired ? 'Yes' : 'No';
     document.getElementById('areaStatus').innerText = areaLevel;
     document.getElementById('prestigeStatus').innerText = prestigeLevel;
@@ -76,6 +80,9 @@ document.getElementById('workButton').addEventListener('click', function() {
         let earnings = 50; // Base earning
         if (hasChainsaw) earnings += 50;
         if (hasVan) earnings += 100;
+        if (hasStumpGrinder) earnings += 150;
+        if (hasHedgeTrimmer) earnings += 75;
+        if (staffHired) earnings *= 1.5; // Staff increases earnings
         let bonus = (prestigeLevel * 25) + (areaLevel * 50);
         money += earnings + bonus;
         fuel -= 10; // Use 10% fuel per job
@@ -84,32 +91,35 @@ document.getElementById('workButton').addEventListener('click', function() {
     }
 });
 
-// Function to handle buying a chainsaw
-document.getElementById('buyChainsaw').addEventListener('click', function() {
-    if (money >= 200 && !hasChainsaw) {
-        money -= 200;
-        hasChainsaw = true;
-        updateStatus('You bought a chainsaw!');
-        displayMessage('You bought a chainsaw!');
-    } else if (hasChainsaw) {
-        displayMessage('You already own a chainsaw!');
+// Function to handle buying items
+function buyItem(item, cost, statusVariable, statusElement, successMessage) {
+    if (money >= cost && !statusVariable) {
+        money -= cost;
+        statusVariable = true;
+        document.getElementById(statusElement).innerText = 'Owned';
+        updateStatus(successMessage);
+        displayMessage(successMessage);
+    } else if (statusVariable) {
+        displayMessage('You already own this item!');
     } else {
-        displayMessage('Not enough money to buy a chainsaw.');
+        displayMessage('Not enough money to buy this item.');
     }
+}
+
+document.getElementById('buyChainsaw').addEventListener('click', function() {
+    buyItem('chainsaw', 200, hasChainsaw, 'chainsawStatus', 'You bought a chainsaw!');
 });
 
-// Function to handle buying a van
 document.getElementById('buyVan').addEventListener('click', function() {
-    if (money >= 500 && !hasVan) {
-        money -= 500;
-        hasVan = true;
-        updateStatus('You bought a van!');
-        displayMessage('You bought a van!');
-    } else if (hasVan) {
-        displayMessage('You already own a van!');
-    } else {
-        displayMessage('Not enough money to buy a van.');
-    }
+    buyItem('van', 500, hasVan, 'vanStatus', 'You bought a van!');
+});
+
+document.getElementById('buyStumpGrinder').addEventListener('click', function() {
+    buyItem('stumpGrinder', 700, hasStumpGrinder, 'stumpGrinderStatus', 'You bought a stump grinder!');
+});
+
+document.getElementById('buyHedgeTrimmer').addEventListener('click', function() {
+    buyItem('hedgeTrimmer', 300, hasHedgeTrimmer, 'hedgeTrimmerStatus', 'You bought a hedge trimmer!');
 });
 
 // Function to handle buying fuel
@@ -159,12 +169,14 @@ document.getElementById('prestige').addEventListener('click', function() {
         money = 0;
         hasChainsaw = false;
         hasVan = false;
+        hasStumpGrinder = false;
+        hasHedgeTrimmer = false;
         fuel = 100;
         staffHired = false;
         areaLevel = 1;
         updateStatus('Business restarted! Prestige Level: ' + prestigeLevel);
         displayMessage('Business restarted! You now earn more per job.');
-        baseContractTime += 5; // Increase timer duration as player progresses
+        baseContractTime += 60; // Increase timer duration as player progresses
     } else {
         displayMessage('You need at least £5000 to prestige.');
     }
@@ -174,27 +186,17 @@ document.getElementById('prestige').addEventListener('click', function() {
 function automateWork() {
     setInterval(function() {
         if (fuel <= 0) return;
-        if (isContractActive) {
-            // Complete contract
-            let earnings = currentContract.reward;
-            money += earnings;
-            fuel -= currentContract.fuelCost;
-            if (fuel < 0) fuel = 0;
-            displayMessage('Staff completed a contract and earned £' + earnings + '!');
-            isContractActive = false;
-            currentContract = null;
-            document.getElementById('contracts').style.display = 'none';
-            updateStatus();
-        } else {
-            let earnings = 50;
-            if (hasChainsaw) earnings += 50;
-            if (hasVan) earnings += 100;
-            let bonus = (prestigeLevel * 25) + (areaLevel * 50);
-            money += earnings + bonus;
-            fuel -= 10;
-            if (fuel < 0) fuel = 0;
-            updateStatus();
-        }
+        let earnings = 50;
+        if (hasChainsaw) earnings += 50;
+        if (hasVan) earnings += 100;
+        if (hasStumpGrinder) earnings += 150;
+        if (hasHedgeTrimmer) earnings += 75;
+        if (staffHired) earnings *= 1.5;
+        let bonus = (prestigeLevel * 25) + (areaLevel * 50);
+        money += earnings + bonus;
+        fuel -= 10;
+        if (fuel < 0) fuel = 0;
+        updateStatus();
     }, 5000); // Staff works every 5 seconds
 }
 
@@ -205,19 +207,22 @@ setInterval(function() {
         document.getElementById('contractTimer').innerText = contractTimer;
     } else {
         contractsAvailable++;
-        contractTimer = baseContractTime + (areaLevel * 5); // Increase timer with area level
+        contractTimer = baseContractTime + (areaLevel * 10); // Increase timer with area level
         generateContract();
     }
 }, 1000); // Countdown every second
 
 // Function to generate a new contract
 function generateContract() {
-    currentContract = {
-        description: 'Large Tree Removal',
-        reward: 500 + (areaLevel * 100),
-        fuelCost: 30
-    };
-    document.getElementById('contractDetails').innerText = 'Contract: ' + currentContract.description + ' - Reward: £' + currentContract.reward + ', Fuel Cost: ' + currentContract.fuelCost + '%';
+    const treeServices = [
+        { description: 'Oak Tree Removal', reward: 700, fuelCost: 40 },
+        { description: 'Crown Reduction of Beech Tree', reward: 500, fuelCost: 25 },
+        { description: 'Stump Grinding', reward: 300, fuelCost: 20 },
+        { description: 'Hedge Cutting', reward: 250, fuelCost: 15 },
+        { description: 'Sycamore Tree Pruning', reward: 600, fuelCost: 30 }
+    ];
+    currentContract = treeServices[Math.floor(Math.random() * treeServices.length)];
+    document.getElementById('contractDetails').innerText = `Contract: ${currentContract.description} - Reward: £${currentContract.reward}, Fuel Cost: ${currentContract.fuelCost}%`;
     document.getElementById('contracts').style.display = 'block';
     displayMessage('A new contract is available!');
 }
