@@ -2,9 +2,9 @@ let money = 5000; // Starting balance set to £5000
 let truckCount = 1;
 let chipperCount = 1;
 let chainsawCount = 2; // Updated to 2 to match the starting staff
-let hasClimbingGear = false;
-let hasStumpGrinder = false;
-let hasHedgeTrimmer = false;
+let climbingGearCount = 0;
+let stumpGrinderCount = 0;
+let hedgeTrimmerCount = 0;
 let climberCount = 1; // Starting with 1 climber
 let groundsmanCount = 1; // Starting with 1 groundsman
 let fuel = 100;
@@ -22,9 +22,9 @@ function updateStatus(extraMessage = '') {
     document.getElementById('truckCount').innerText = truckCount;
     document.getElementById('chipperCount').innerText = chipperCount;
     document.getElementById('chainsawCount').innerText = chainsawCount;
-    document.getElementById('climbingGearStatus').innerText = hasClimbingGear ? 'Owned' : 'Not owned';
-    document.getElementById('stumpGrinderStatus').innerText = hasStumpGrinder ? 'Owned' : 'Not owned';
-    document.getElementById('hedgeTrimmerStatus').innerText = hasHedgeTrimmer ? 'Owned' : 'Not owned';
+    document.getElementById('climbingGearCount').innerText = climbingGearCount;
+    document.getElementById('stumpGrinderCount').innerText = stumpGrinderCount;
+    document.getElementById('hedgeTrimmerCount').innerText = hedgeTrimmerCount;
     document.getElementById('climberCount').innerText = climberCount;
     document.getElementById('groundsmanCount').innerText = groundsmanCount;
     document.getElementById('areaStatus').innerText = areaLevel;
@@ -54,7 +54,6 @@ document.getElementById('workButton').addEventListener('click', function() {
         return;
     }
     if (isContractActive) {
-        // Process contract
         let earnings = currentContract.reward * (1 + prestigeLevel * 0.1);
         money += earnings;
         fuel -= currentContract.fuelCost;
@@ -65,10 +64,9 @@ document.getElementById('workButton').addEventListener('click', function() {
         document.getElementById('contracts').style.display = 'none';
         updateStatus();
     } else {
-        // Basic job
         let earnings = 500; // Base job earnings
-        if (hasHedgeTrimmer) earnings += 150;
-        if (hasStumpGrinder) earnings += 300;
+        if (hedgeTrimmerCount > 0) earnings += 150;
+        if (stumpGrinderCount > 0) earnings += 300;
         let bonus = areaLevel * 100;
         let prestigeBonus = earnings * (prestigeLevel * 0.1);
         money += earnings + bonus + prestigeBonus;
@@ -91,14 +89,13 @@ function displayMessage(message) {
     }, 5000);
 }
 
-// Timer for contracts, correcting timer freezing
 setInterval(function() {
     if (contractTimer > 0) {
         contractTimer--;
         document.getElementById('contractTimer').innerText = contractTimer;
     } else {
         generateContract();
-        contractTimer = 60 + (areaLevel * 10); // Reset timer with increasing time for more cities
+        contractTimer = 60 + (areaLevel * 10);
     }
 }, 1000);
 
@@ -125,11 +122,11 @@ document.getElementById('acceptContractButton').addEventListener('click', functi
         displayMessage('Not enough fuel to accept this contract.');
         return;
     }
-    if (currentContract.requiredEquipment === 'Stump Grinder' && !hasStumpGrinder) {
+    if (currentContract.requiredEquipment === 'Stump Grinder' && stumpGrinderCount === 0) {
         displayMessage('You need a Stump Grinder to accept this contract.');
         return;
     }
-    if (currentContract.requiredEquipment === 'Hedge Trimmer' && !hasHedgeTrimmer) {
+    if (currentContract.requiredEquipment === 'Hedge Trimmer' && hedgeTrimmerCount === 0) {
         displayMessage('You need a Hedge Trimmer to accept this contract.');
         return;
     }
@@ -137,47 +134,14 @@ document.getElementById('acceptContractButton').addEventListener('click', functi
     displayMessage('You accepted a contract: ' + currentContract.description);
 });
 
-// Function to buy items
-function buyItem(cost, itemVariable, statusElementId, successMessage) {
-    if (money >= cost) {
-        money -= cost;
-        if (typeof itemVariable === 'number') {
-            itemVariable += 1;
-            document.getElementById(statusElementId).innerText = itemVariable;
-        } else {
-            itemVariable = true;
-            document.getElementById(statusElementId).innerText = 'Owned';
-        }
-        updateStatus(successMessage);
-        displayMessage(successMessage);
-        return itemVariable;
-    } else {
-        displayMessage('Not enough money to make this purchase.');
-    }
-    return itemVariable;
-}
-
-// Buy Chainsaw
-document.getElementById('buyChainsaw').addEventListener('click', function() {
-    chainsawCount = buyItem(500, chainsawCount, 'chainsawCount', 'You bought a chainsaw!');
-});
-
-// Buy Climbing Gear
-document.getElementById('buyClimbingGear').addEventListener('click', function() {
-    hasClimbingGear = buyItem(1000, hasClimbingGear, 'climbingGearStatus', 'You bought climbing gear!');
-});
-
-// Buy Hedge Trimmer
 document.getElementById('buyHedgeTrimmer').addEventListener('click', function() {
-    hasHedgeTrimmer = buyItem(800, hasHedgeTrimmer, 'hedgeTrimmerStatus', 'You bought a hedge trimmer!');
+    hedgeTrimmerCount = buyItem(800, hedgeTrimmerCount, 'hedgeTrimmerCount', 'You bought a hedge trimmer!');
 });
 
-// Buy Stump Grinder
 document.getElementById('buyStumpGrinder').addEventListener('click', function() {
-    hasStumpGrinder = buyItem(1500, hasStumpGrinder, 'stumpGrinderStatus', 'You bought a stump grinder!');
+    stumpGrinderCount = buyItem(1500, stumpGrinderCount, 'stumpGrinderCount', 'You bought a stump grinder!');
 });
 
-// Unlock Area with updated requirements
 document.getElementById('unlockArea').addEventListener('click', function() {
     let staffCount = climberCount + groundsmanCount;
     if (money >= 100000 && areaLevel < maxAreas) {
@@ -196,5 +160,4 @@ document.getElementById('unlockArea').addEventListener('click', function() {
     }
 });
 
-// Initial status update
 updateStatus();
