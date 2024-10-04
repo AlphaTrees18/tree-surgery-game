@@ -12,7 +12,7 @@
             padding: 20px;
         }
         #game {
-            max-width: 700px;
+            max-width: 1000px;
             margin: auto;
             background-color: #ffffff;
             padding: 20px;
@@ -90,6 +90,30 @@
         #acceptContractButton:hover {
             background-color: #f4511e;
         }
+        /* Styles for visual empire growth */
+        #empire {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .areaBox {
+            width: 150px;
+            height: 100px;
+            background-color: #a5d6a7;
+            border: 2px solid #2e7d32;
+            border-radius: 10px;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .areaBox.locked {
+            background-color: #cfd8dc;
+            border: 2px solid #90a4ae;
+            color: #90a4ae;
+        }
     </style>
 </head>
 <body>
@@ -97,6 +121,14 @@
         <h1>Arborist Ascend: Grow, Conquer, and Sustain your tree surgery business</h1>
         <div id="instructions">
             <p>Welcome to Arborist Ascend! Start by doing jobs to earn money. Use your earnings to buy equipment, hire staff, and expand your tree surgery business. Focus on growth, efficiency, and sustainability as you expand your empire!</p>
+            <p><strong>How to Play:</strong></p>
+            <ul>
+                <li>Click "Do a Job" to perform basic jobs and earn money.</li>
+                <li>Purchase equipment to unlock higher-paying jobs and contracts.</li>
+                <li>Unlock new areas to expand your business empire.</li>
+                <li>Accept contracts to earn more money, but ensure you have the required equipment.</li>
+                <li>Monitor your fuel level and refuel when necessary.</li>
+            </ul>
         </div>
         <p id="status">You have £0.</p>
         <p id="fuelStatus">Fuel: 100%</p>
@@ -117,6 +149,10 @@
             <h3>Available Contract:</h3>
             <p id="contractDetails"></p>
             <button id="acceptContractButton">Accept Contract</button>
+        </div>
+        <!-- Empire Visual Representation -->
+        <div id="empire">
+            <!-- Area boxes will be generated dynamically -->
         </div>
         <div id="inventory">
             <h3>Your Inventory:</h3>
