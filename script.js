@@ -5,6 +5,8 @@ let chainsawCount = 1; // Start with 1 chainsaw
 let hedgeTrimmerCount = 0;
 let stumpGrinderCount = 0;
 let woodChipperCount = 0;
+let climberCount = 0;
+let groundsmanCount = 0;
 let fuelCount = 100; // Fuel starts at 100%
 let money = 5000; // Player starts with £5000
 let progressBarElement = document.getElementById("progress-bar");
@@ -29,6 +31,8 @@ function updateStatus(message) {
     document.getElementById('hedgeTrimmerCount').innerText = hedgeTrimmerCount;
     document.getElementById('stumpGrinderCount').innerText = stumpGrinderCount;
     document.getElementById('woodChipperCount').innerText = woodChipperCount;
+    document.getElementById('climberCount').innerText = climberCount;
+    document.getElementById('groundsmanCount').innerText = groundsmanCount;
     document.getElementById('fuelCount').innerText = fuelCount + "%";
     document.getElementById('moneyDisplay').innerText = "Money: £" + money.toFixed(2);
     document.getElementById('currentAreaDisplay').innerText = "Current Area: " + currentArea.name;
@@ -69,10 +73,27 @@ function buyFuel() {
     }
 }
 
+// Function to hire staff members
+function hireStaff(type) {
+    let cost = 0;
+    if (type === 'climber' && money >= 2000) {
+        cost = 2000;
+        climberCount++;
+    } else if (type === 'groundsman' && money >= 1500) {
+        cost = 1500;
+        groundsmanCount++;
+    } else {
+        alert("Not enough money to hire a " + type);
+        return;
+    }
+    money -= cost;
+    updateStatus("You hired a " + type + "!");
+}
+
 // Function to start a job
 function startJob(jobId) {
-    if (jobInProgress[jobId] || availableCrews <= 0) {
-        alert("You don't have enough crews available or this job is already in progress!");
+    if (jobInProgress[jobId] || availableCrews <= 0 || climberCount < availableCrews || groundsmanCount < availableCrews) {
+        alert("You don't have enough crews available or this job is already in progress, or you lack enough staff!");
         return;
     }
 
