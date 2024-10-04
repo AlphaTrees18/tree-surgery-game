@@ -9,15 +9,37 @@ let contractTimer = 10;
 let contractsAvailable = 0;
 let awards = [];
 let baseContractTime = 10; // Starting timer for contracts
+let messageQueue = [];
+let isDisplayingMessage = false;
+let currentContract = null;
+let isContractActive = false;
 
-// Function to display messages without pop-ups
+// Function to display messages with queue
 function displayMessage(message) {
-    const messageText = document.getElementById('messageText');
-    messageText.innerText = message;
-    // Clear message after 5 seconds
-    setTimeout(() => {
-        messageText.innerText = '';
-    }, 5000);
+    messageQueue.push(message);
+    if (!isDisplayingMessage) {
+        showNextMessage();
+    }
+}
+
+function showNextMessage() {
+    if (messageQueue.length > 0) {
+        isDisplayingMessage = true;
+        const messageText = document.getElementById('messageText');
+        messageText.style.opacity = '0';
+        setTimeout(() => {
+            messageText.innerText = messageQueue.shift();
+            messageText.style.opacity = '1';
+        }, 500);
+        setTimeout(() => {
+            messageText.style.opacity = '0';
+            setTimeout(() => {
+                showNextMessage();
+            }, 500);
+        }, 5000);
+    } else {
+        isDisplayingMessage = false;
+    }
 }
 
 // Update the status of the game
@@ -39,14 +61,27 @@ document.getElementById('workButton').addEventListener('click', function() {
         displayMessage('No fuel! Buy more to continue working.');
         return;
     }
-    let earnings = 50; // Base earning
-    if (hasChainsaw) earnings += 50;
-    if (hasVan) earnings += 100;
-    let bonus = (prestigeLevel * 25) + (areaLevel * 50);
-    money += earnings + bonus;
-    fuel -= 10; // Use 10% fuel per job
-    if (fuel < 0) fuel = 0;
-    updateStatus();
+    if (isContractActive) {
+        // If a contract is active, earnings are increased
+        let earnings = currentContract.reward;
+        money += earnings;
+        fuel -= currentContract.fuelCost;
+        if (fuel < 0) fuel = 0;
+        displayMessage('You completed a contract and earned £' + earnings + '!');
+        isContractActive = false;
+        currentContract = null;
+        document.getElementById('contracts').style.display = 'none';
+        updateStatus();
+    } else {
+        let earnings = 50; // Base earning
+        if (hasChainsaw) earnings += 50;
+        if (hasVan) earnings += 100;
+        let bonus = (prestigeLevel * 25) + (areaLevel * 50);
+        money += earnings + bonus;
+        fuel -= 10; // Use 10% fuel per job
+        if (fuel < 0) fuel = 0;
+        updateStatus();
+    }
 });
 
 // Function to handle buying a chainsaw
@@ -139,14 +174,27 @@ document.getElementById('prestige').addEventListener('click', function() {
 function automateWork() {
     setInterval(function() {
         if (fuel <= 0) return;
-        let earnings = 50;
-        if (hasChainsaw) earnings += 50;
-        if (hasVan) earnings += 100;
-        let bonus = (prestigeLevel * 25) + (areaLevel * 50);
-        money += earnings + bonus;
-        fuel -= 10;
-        if (fuel < 0) fuel = 0;
-        updateStatus();
+        if (isContractActive) {
+            // Complete contract
+            let earnings = currentContract.reward;
+            money += earnings;
+            fuel -= currentContract.fuelCost;
+            if (fuel < 0) fuel = 0;
+            displayMessage('Staff completed a contract and earned £' + earnings + '!');
+            isContractActive = false;
+            currentContract = null;
+            document.getElementById('contracts').style.display = 'none';
+            updateStatus();
+        } else {
+            let earnings = 50;
+            if (hasChainsaw) earnings += 50;
+            if (hasVan) earnings += 100;
+            let bonus = (prestigeLevel * 25) + (areaLevel * 50);
+            money += earnings + bonus;
+            fuel -= 10;
+            if (fuel < 0) fuel = 0;
+            updateStatus();
+        }
     }, 5000); // Staff works every 5 seconds
 }
 
@@ -158,10 +206,35 @@ setInterval(function() {
     } else {
         contractsAvailable++;
         contractTimer = baseContractTime + (areaLevel * 5); // Increase timer with area level
-        displayMessage('A new contract is available!');
-        // Implement contract logic here if desired
+        generateContract();
     }
 }, 1000); // Countdown every second
+
+// Function to generate a new contract
+function generateContract() {
+    currentContract = {
+        description: 'Large Tree Removal',
+        reward: 500 + (areaLevel * 100),
+        fuelCost: 30
+    };
+    document.getElementById('contractDetails').innerText = 'Contract: ' + currentContract.description + ' - Reward: £' + currentContract.reward + ', Fuel Cost: ' + currentContract.fuelCost + '%';
+    document.getElementById('contracts').style.display = 'block';
+    displayMessage('A new contract is available!');
+}
+
+// Function to accept a contract
+document.getElementById('acceptContractButton').addEventListener('click', function() {
+    if (isContractActive) {
+        displayMessage('You are already working on a contract!');
+        return;
+    }
+    if (fuel < currentContract.fuelCost) {
+        displayMessage('Not enough fuel to accept this contract.');
+        return;
+    }
+    isContractActive = true;
+    displayMessage('You accepted a contract: ' + currentContract.description);
+});
 
 // Function to update awards
 function updateAwards() {
