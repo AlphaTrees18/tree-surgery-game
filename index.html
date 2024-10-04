@@ -20,6 +20,19 @@
             text-align: center;
             color: #2e7d32;
         }
+        #instructions {
+            margin-top: 10px;
+            background-color: #c8e6c9;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #4caf50;
+        }
+        #moneyDisplay {
+            font-size: 1.2em;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
         #boxes {
             display: flex;
             flex-wrap: wrap;
@@ -112,6 +125,13 @@
 <body>
     <div id="game">
         <h1>Arborist Ascend: Grow, Conquer, and Sustain Your Tree Surgery Business</h1>
+        
+        <div id="instructions">
+            <p>Welcome to Arborist Ascend! Start by doing jobs to earn money. Use your earnings to buy equipment, hire staff, and expand your tree surgery business. Focus on growth, efficiency, and sustainability as you expand your empire!</p>
+        </div>
+
+        <div id="moneyDisplay">Money: £5000</div>
+
         <div id="boxes">
             <div class="box" id="box1">
                 <p>Truck 1</p>
@@ -152,11 +172,13 @@
                 <li>Chainsaws: <span id="chainsawCount">1</span></li>
                 <li>Hedge Trimmers: <span id="hedgeTrimmerCount">0</span></li>
                 <li>Stump Grinders: <span id="stumpGrinderCount">0</span></li>
+                <li>Wood Chippers: <span id="woodChipperCount">0</span></li>
                 <li>Fuel: <span id="fuelCount">100%</span></li>
             </ul>
             <button onclick="buyTool('chainsaw')">Buy Chainsaw (£500)</button>
             <button onclick="buyTool('hedgeTrimmer')">Buy Hedge Trimmer (£300)</button>
-            <button onclick="buyTool('stumpGrinder')">Buy Stump Grinder (£400)</button>
+            <button onclick="buyTool('stumpGrinder')">Buy Stump Grinder (£3000)</button>
+            <button onclick="buyTool('woodChipper')">Buy Wood Chipper (£5000)</button>
             <button onclick="buyFuel()">Buy Fuel (£100)</button>
             <button onclick="bidForJob()">Bid for Additional Job (50% chance - £100)</button>
         </div>
