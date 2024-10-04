@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Arborist Ascend: Grow, Conquer, and Sustain</title>
+    <style>
+        body {
+            background-color: #e8f5e9; /* Light green background */
+            font-family: Arial, sans-serif;
+            color: #2e7d32; /* Dark green text */
+            margin: 0;
+            padding: 20px;
+        }
+        #game {
+            max-width: 700px;
+            margin: auto;
+            background-color: #ffffff; /* White background for game area */
+            padding: 20px;
+            border: 2px solid #2e7d32;
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #1b5e20;
+        }
+        button {
+            background-color: #66bb6a; /* Green buttons */
+            color: white;
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #57a05a;
+        }
+        #inventory {
+            margin-top: 20px;
+        }
+        #instructions {
+            background-color: #c8e6c9;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #timer, #awards {
+            font-weight: bold;
+        }
+        #bossChallenge {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ffeb3b; /* Highlighted section for boss-level challenge */
+            border-radius: 10px;
+        }
+        .owned {
+            color: #388e3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="game">
+        <h1>Arborist Ascend: Grow, Conquer, and Sustain</h1>
+        <div id="instructions">
+            <p>Welcome to Arborist Ascend! Start by doing jobs to earn money. Use your earnings to buy equipment, hire staff, and expand your tree surgery business. Focus on growth, efficiency, and sustainability as you expand your empire!</p>
+        </div>
+        <p id="status">You have £0.</p>
+        <p id="fuelStatus">Fuel: 100%</p>
+        <p id="timer">Next contract in: <span id="contractTimer">10</span> seconds</p>
+        <button id="workButton">Do a Job</button>
+        <button id="buyChainsaw">Buy Chainsaw (£200)</button>
+        <button id="buyVan">Buy Van (£500)</button>
+        <button id="buyFuel">Buy Fuel (£50)</button>
+        <button id="unlockArea">Unlock New Area (£1000)</button>
+        <button id="hireStaff">Hire Staff (£1500)</button>
+        <button id="prestige">Restart Business (Prestige)</button>
+        <div id="inventory">
+            <h3>Your Inventory:</h3>
+            <ul>
+                <li>Chainsaw: <span id="chainsawStatus">Not owned</span></li>
+                <li>Van: <span id="vanStatus">Not owned</span></li>
+                <li>Staff Hired: <span id="staffStatus">No</span></li>
+                <li>Areas Unlocked: <span id="areaStatus">1</span></li>
+                <li>Prestige Level: <span id="prestigeStatus">0</span></li>
+            </ul>
+        </div>
+        <div id="awards">
+            <h3>Awards & Achievements:</h3>
+            <p id="awardsList">No awards earned yet.</p>
+        </div>
+        <div id="bossChallenge">
+            <h3>Boss-Level Challenge:</h3>
+            <p id="bossChallengeInfo">Next boss challenge unlocks when you reach 3 areas unlocked!</p>
+        </div>
+    </div>
+    <script src="script.js"></script> <!-- Link to the JavaScript file -->
+</body>
+</html>
