@@ -1,4 +1,4 @@
-let money = 0;
+let money = 500; // Starting balance increased to £500
 let truckCount = 1;
 let chipperCount = 1;
 let chainsawCount = 1;
@@ -11,10 +11,11 @@ let fuel = 100;
 let prestigeLevel = 0;
 let areaLevel = 1;
 let maxAreas = 5; // Maximum number of areas
-let contractTimer = 300;
+let areaNames = ['London', 'Birmingham', 'Manchester', 'Glasgow', 'Bristol'];
+let contractTimer = 60; // Reduced contract timer
 let contractsAvailable = 0;
 let awards = [];
-let baseContractTime = 300; // Starting timer for contracts
+let baseContractTime = 60; // Starting timer for contracts
 let messageQueue = [];
 let isDisplayingMessage = false;
 let currentContract = null;
@@ -74,7 +75,7 @@ function updateEmpire() {
         const areaBox = document.createElement('div');
         areaBox.classList.add('areaBox');
         if (i <= areaLevel) {
-            areaBox.innerText = 'Area ' + i;
+            areaBox.innerText = areaNames[i - 1];
         } else {
             areaBox.classList.add('locked');
             areaBox.innerText = 'Locked';
@@ -111,7 +112,7 @@ document.getElementById('workButton').addEventListener('click', function() {
             displayMessage('You need more crews (trucks with climbers and groundsmen, each with chainsaws) to do jobs.');
             return;
         }
-        let earnings = 50 * crewCount; // Base earning per crew
+        let earnings = 100 * crewCount; // Base earning per crew increased for better progression
         if (hasHedgeTrimmer) earnings += 75 * crewCount;
         if (hasStumpGrinder) earnings += 150 * crewCount;
         let bonus = (prestigeLevel * 25) + (areaLevel * 50);
@@ -119,6 +120,7 @@ document.getElementById('workButton').addEventListener('click', function() {
         fuel -= 10 * crewCount; // Use fuel per crew
         if (fuel < 0) fuel = 0;
         updateStatus();
+        displayMessage('You earned £' + (earnings + bonus) + ' from doing a job.');
     }
 });
 
@@ -251,16 +253,16 @@ document.getElementById('unlockArea').addEventListener('click', function() {
         if (truckCount >= 3 && chainsawCount >= 6 && staffCount >= 6) {
             money -= 1000;
             areaLevel += 1;
-            updateStatus('You unlocked a new area!');
-            displayMessage('You unlocked a new area!');
+            updateStatus('You unlocked ' + areaNames[areaLevel - 1] + '!');
+            displayMessage('Congratulations! You have expanded to ' + areaNames[areaLevel - 1] + '!');
             checkForAwards();
         } else {
-            displayMessage('To unlock a new area, you need at least 3 trucks, 6 chainsaws, and 6 staff members.');
+            displayMessage('To unlock a new city, you need at least 3 trucks, 6 chainsaws, and 6 staff members.');
         }
     } else if (areaLevel >= maxAreas) {
-        displayMessage('All areas are already unlocked.');
+        displayMessage('All cities are already unlocked.');
     } else {
-        displayMessage('Not enough money to unlock a new area.');
+        displayMessage('Not enough money to unlock a new city.');
     }
 });
 
@@ -268,55 +270,16 @@ document.getElementById('unlockArea').addEventListener('click', function() {
 document.getElementById('prestige').addEventListener('click', function() {
     if (money >= 5000) {
         prestigeLevel += 1;
-        money = 0;
-        truckCount = 1;
-        chipperCount = 1;
-        chainsawCount = 1;
-        hasClimbingGear = false;
-        hasStumpGrinder = false;
-        hasHedgeTrimmer = false;
-        climberCount = 0;
-        groundsmanCount = 0;
+        money = 500; // Reset money to starting balance
         fuel = 100;
-        areaLevel = 1;
-        isContractActive = false;
-        currentContract = null;
-        document.getElementById('contracts').style.display = 'none';
-        // Clear automated work interval
-        if (automateWorkInterval !== null) {
-            clearInterval(automateWorkInterval);
-            automateWorkInterval = null;
-        }
+        baseContractTime += 60; // Increase timer duration as player progresses
         updateStatus('Business restarted! Prestige Level: ' + prestigeLevel);
         displayMessage('Business restarted! You now earn more per job.');
-        baseContractTime += 60; // Increase timer duration as player progresses
+        // Note: Equipment and staff are retained
     } else {
         displayMessage('You need at least £5000 to prestige.');
     }
 });
-
-// Function to automate work
-function automateWork() {
-    if (automateWorkInterval !== null) {
-        clearInterval(automateWorkInterval);
-    }
-    automateWorkInterval = setInterval(function() {
-        if (fuel <= 0) return;
-        let crewCount = Math.min(truckCount, Math.floor(Math.min(climberCount, groundsmanCount) / 2));
-        let availableChainsaws = chainsawCount - (climberCount + groundsmanCount);
-        if (crewCount === 0 || availableChainsaws < 0) {
-            return;
-        }
-        let earnings = 50 * crewCount;
-        if (hasHedgeTrimmer) earnings += 75 * crewCount;
-        if (hasStumpGrinder) earnings += 150 * crewCount;
-        let bonus = (prestigeLevel * 25) + (areaLevel * 50);
-        money += earnings + bonus;
-        fuel -= 10 * crewCount;
-        if (fuel < 0) fuel = 0;
-        updateStatus();
-    }, 5000); // Staff works every 5 seconds
-}
 
 // Timer for contracts, adjusting over time
 setInterval(function() {
@@ -425,7 +388,7 @@ function updateAwards() {
 function checkForAwards() {
     if (areaLevel === 3 && !awards.includes('Regional Arborist Award')) {
         awards.push('Regional Arborist Award');
-        displayMessage('Congratulations! You earned the Regional Arborist Award for unlocking 3 areas!');
+        displayMessage('Congratulations! You earned the Regional Arborist Award for unlocking 3 cities!');
     }
     if (prestigeLevel === 1 && !awards.includes('Prestige Pioneer')) {
         awards.push('Prestige Pioneer');
@@ -438,7 +401,7 @@ function updateBossChallenge() {
     if (areaLevel >= 3) {
         document.getElementById('bossChallengeInfo').innerText = 'You are ready for the boss challenge! Take on the Giant Oak in the central park!';
     } else {
-        document.getElementById('bossChallengeInfo').innerText = 'Next boss challenge unlocks when you reach 3 areas unlocked!';
+        document.getElementById('bossChallengeInfo').innerText = 'Next boss challenge unlocks when you reach 3 cities unlocked!';
     }
 }
 
