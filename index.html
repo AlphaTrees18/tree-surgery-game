@@ -4,238 +4,153 @@
     <meta charset="UTF-8">
     <title>Arborist Ascend: Grow, Conquer, and Sustain Your Tree Surgery Business</title>
     <style>
-        /* [Styles remain the same with minor additions for the progress bar] */
         body {
-            background-color: #e8f5e9;
+            background-color: #f0f0f0;
             font-family: Arial, sans-serif;
-            color: #2e7d32;
             margin: 0;
             padding: 20px;
         }
         #game {
-            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
             margin: auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border: 2px solid #2e7d32;
-            border-radius: 10px;
         }
         h1 {
             text-align: center;
-            color: #1b5e20;
+            color: #2e7d32;
         }
-        button {
-            background-color: #66bb6a;
-            color: white;
-            padding: 10px;
-            margin: 5px 5px 5px 0;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #57a05a;
-        }
-        #workButton {
-            background-color: #ffca28;
-            color: #212121;
-            font-weight: bold;
-        }
-        #workButton:hover {
-            background-color: #fdd835;
-        }
-        #inventory {
-            margin-top: 20px;
-        }
-        #instructions {
-            background-color: #c8e6c9;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        #timer, #awards {
-            font-weight: bold;
-        }
-        #bossChallenge {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #ffeb3b;
-            border-radius: 10px;
-        }
-        .owned {
-            color: #388e3c;
-            font-weight: bold;
-        }
-        #messageArea {
-            margin-top: 20px;
-            background-color: #e0f7fa;
-            padding: 10px;
-            border-radius: 5px;
-            color: #006064;
-            min-height: 50px;
-            position: relative;
-            overflow: hidden;
-        }
-        #messageText {
-            position: absolute;
-            width: 100%;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-        #contracts {
-            margin-top: 20px;
-            background-color: #fff3e0;
-            padding: 10px;
-            border-radius: 5px;
-            color: #bf360c;
-        }
-        #contracts h3 {
-            margin-top: 0;
-        }
-        #acceptContractButton {
-            background-color: #ff7043;
-        }
-        #acceptContractButton:hover {
-            background-color: #f4511e;
-        }
-        /* Progress bar styles */
-        #contractProgress {
-            width: 100%;
-            height: 20px;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            margin-top: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-        #progressFill {
-            height: 100%;
-            width: 0%;
-            background-color: #76c7c0;
-            border-radius: 5px;
-            transition: width 1s linear;
-        }
-        #empire {
-            margin-top: 20px;
+        #boxes {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
         }
-        .areaBox {
-            width: 150px;
-            height: 100px;
-            background-color: #a5d6a7;
-            border: 2px solid #2e7d32;
-            border-radius: 10px;
+        .box {
+            width: 200px;
+            height: 150px;
+            background-color: #e8f5e9;
             margin: 10px;
+            padding: 10px;
+            border: 2px solid #4caf50;
+            border-radius: 5px;
             display: flex;
-            align-items: center;
-            justify-content: center;
             flex-direction: column;
-            text-align: center;
-            padding: 5px;
+            justify-content: center;
+            align-items: center;
         }
-        .areaBox.locked {
+        .locked {
             background-color: #cfd8dc;
-            border: 2px solid #90a4ae;
+            border-color: #90a4ae;
             color: #90a4ae;
         }
-        /* Styles for weekly jobs section */
-        #weeklyJobs {
+        #jobsList {
             margin-top: 20px;
-            background-color: #fffde7;
-            padding: 10px;
+            background-color: #fff3e0;
+            padding: 15px;
             border-radius: 5px;
             color: #f57f17;
         }
-        #weeklyJobs h3 {
-            margin-top: 0;
-        }
-        .jobItem {
+        .job {
             margin-bottom: 10px;
         }
-        .jobItem button {
+        .job button {
             margin-left: 10px;
         }
-        #dayTimer {
-            font-weight: bold;
+        #progress {
+            margin-top: 20px;
+            background-color: #e0e0e0;
+            height: 25px;
+            width: 100%;
+            border-radius: 5px;
+            position: relative;
+        }
+        #progress-bar {
+            height: 100%;
+            background-color: #4caf50;
+            width: 0;
+            border-radius: 5px;
+            transition: width 1s ease-in-out;
+        }
+        #inventory {
+            margin-top: 20px;
+            background-color: #ffffff;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        #inventory ul {
+            list-style: none;
+            padding: 0;
+        }
+        #inventory ul li {
+            margin: 5px 0;
+        }
+        #inventory button {
+            margin: 5px;
+            padding: 10px;
+            background-color: #66bb6a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #inventory button:hover {
+            background-color: #57a05a;
         }
     </style>
 </head>
 <body>
     <div id="game">
         <h1>Arborist Ascend: Grow, Conquer, and Sustain Your Tree Surgery Business</h1>
-        <div id="instructions">
-            <p>Welcome to Arborist Ascend! You start your journey in London. Use your earnings to buy equipment, hire staff, and expand your tree surgery business across the UK. Focus on growth, efficiency, and sustainability as you expand your empire!</p>
-            <p><strong>How to Play:</strong></p>
-            <ul>
-                <li>Click the <strong>"Do a Job"</strong> button to perform basic jobs and earn money.</li>
-                <li>Purchase equipment and hire staff to unlock higher-paying jobs and contracts.</li>
-                <li>Each staff member requires their own chainsaw.</li>
-                <li>Each crew (truck) needs a climber and a groundsman, each with their own chainsaw.</li>
-                <li>Accept contracts to earn more money, but ensure you have the required equipment and staff.</li>
-                <li>Complete weekly jobs before the week ends!</li>
-                <li>Monitor your fuel level and refuel when necessary.</li>
-                <li>Prestige to earn permanent bonuses and unlock advanced content.</li>
-            </ul>
-        </div>
-        <p id="status">You have £5000.</p>
-        <p id="fuelStatus">Fuel: 100%</p>
-        <p id="timer">Next contract in: <span id="contractTimer">60</span> seconds</p>
-        <p id="dayTimer">Day: 1</p>
-        <button id="workButton">Do a Job</button>
-        <button id="buyChainsaw">Buy Chainsaw (£500)</button>
-        <button id="buyClimbingGear">Buy Climbing Gear (£1000)</button>
-        <button id="buyHedgeTrimmer">Buy Hedge Trimmer (£800)</button>
-        <button id="buyStumpGrinder">Buy Stump Grinder (£1500)</button>
-        <button id="buyTruck">Buy Truck (£2000)</button>
-        <button id="hireClimber">Hire Climber (£1500)</button>
-        <button id="hireGroundsman">Hire Groundsman (£1200)</button>
-        <button id="buyFuel">Buy Fuel (£100)</button>
-        <button id="unlockArea">Unlock New City (£100,000)</button>
-        <button id="prestige">Prestige (Restart with Bonuses)</button>
-        <div id="messageArea">
-            <p id="messageText"></p>
-        </div>
-        <div id="contracts" style="display: none;">
-            <h3>Available Contract:</h3>
-            <p id="contractDetails"></p>
-            <button id="acceptContractButton">Accept Contract</button>
-            <div id="contractProgress" style="display: none;">
-                <div id="progressFill"></div>
+        <div id="boxes">
+            <div class="box" id="box1">
+                <p>Truck 1</p>
+                <p>Ready</p>
+            </div>
+            <div class="box locked" id="box2">
+                <p>Locked</p>
+            </div>
+            <div class="box locked" id="box3">
+                <p>Locked</p>
             </div>
         </div>
-        <!-- Weekly Jobs Section -->
-        <div id="weeklyJobs">
-            <h3>Weekly Jobs</h3>
-            <div id="jobsList">
-                <!-- Jobs will be dynamically added here -->
+        
+        <div id="jobsList">
+            <h3>Available Jobs</h3>
+            <div class="job" id="job1">
+                <span>Tree Removal - £500</span>
+                <button onclick="startJob(1)">Start</button>
+            </div>
+            <div class="job" id="job2">
+                <span>Hedge Trimming - £300</span>
+                <button onclick="startJob(2)">Start</button>
+            </div>
+            <div class="job" id="job3">
+                <span>Stump Grinding - £400</span>
+                <button onclick="startJob(3)">Start</button>
             </div>
         </div>
-        <div id="empire"></div>
+
+        <div id="progress">
+            <div id="progress-bar"></div>
+        </div>
+
         <div id="inventory">
             <h3>Your Inventory:</h3>
             <ul>
                 <li>Trucks: <span id="truckCount">1</span></li>
-                <li>Chippers: <span id="chipperCount">1</span></li>
-                <li>Chainsaws: <span id="chainsawCount">2</span></li>
-                <li>Climbing Gear: <span id="climbingGearCount">0</span></li>
-                <li>Stump Grinders: <span id="stumpGrinderCount">0</span></li>
+                <li>Chainsaws: <span id="chainsawCount">1</span></li>
                 <li>Hedge Trimmers: <span id="hedgeTrimmerCount">0</span></li>
-                <li>Climbers Hired: <span id="climberCount">1</span></li>
-                <li>Groundsmen Hired: <span id="groundsmanCount">1</span></li>
-                <li>Cities Unlocked: <span id="areaStatus">1</span></li>
-                <li>Prestige Level: <span id="prestigeStatus">0</span></li>
+                <li>Stump Grinders: <span id="stumpGrinderCount">0</span></li>
+                <li>Fuel: <span id="fuelCount">100%</span></li>
             </ul>
-        </div>
-        <div id="awards">
-            <h3>Awards & Achievements:</h3>
-            <p id="awardsList">No awards earned yet.</p>
-        </div>
-        <div id="bossChallenge">
-            <h3>Boss-Level Challenge:</h3>
-            <p id="bossChallengeInfo">Next boss challenge unlocks when you reach 3 cities unlocked!</p>
+            <button onclick="buyTool('chainsaw')">Buy Chainsaw (£500)</button>
+            <button onclick="buyTool('hedgeTrimmer')">Buy Hedge Trimmer (£300)</button>
+            <button onclick="buyTool('stumpGrinder')">Buy Stump Grinder (£400)</button>
+            <button onclick="buyFuel()">Buy Fuel (£100)</button>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
